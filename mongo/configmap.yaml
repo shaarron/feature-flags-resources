@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongo-config
+data:
+  MONGO_HOST: mongo
+  MONGO_INITDB_DATABASE: feature_flags_db
+
