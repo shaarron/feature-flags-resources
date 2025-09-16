@@ -1,6 +1,6 @@
 # Feature Flags Resources
 
-This repository contains Kubernetes manifests for deploying a feature flags service, including MongoDB as the database and an NGINX ingress controller.
+This repository contains Kubernetes manifests for deploying a feature flags service, including MongoDB as the database and an NGINX ingress controller as the reverese proxy.
 
 ## Project Structure
 

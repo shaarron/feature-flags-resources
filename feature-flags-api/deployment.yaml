@@ -26,9 +26,3 @@ spec:
             name: mongo-secret
         - configMapRef:
             name: mongo-config
-      #   volumeMounts:
-      #   - name: app-tmp
-      #     mountPath: /data
-      # volumes:
-      # - name: app-tmp
-      #   emptyDir: {}
