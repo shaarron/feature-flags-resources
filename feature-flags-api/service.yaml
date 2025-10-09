@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: feature-flags-api-service
   labels:
-    app: feature-flags-api-service
+    app: feature-flags-api
 spec:
   type: ClusterIP
   ports:

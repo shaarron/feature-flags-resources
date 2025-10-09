@@ -26,3 +26,27 @@ spec:
             name: mongo-secret
         - configMapRef:
             name: mongo-config
+        readinessProbe:
+          httpGet:
+            path: /flags       
+            port: 5000
+          initialDelaySeconds: 5   
+          periodSeconds: 10        
+          timeoutSeconds: 2        
+          failureThreshold: 3      
+          successThreshold: 1
+        livenessProbe:
+          httpGet:
+            path: /flags        
+            port: 5000
+          initialDelaySeconds: 15  
+          periodSeconds: 20
+          timeoutSeconds: 2
+          failureThreshold: 3
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
