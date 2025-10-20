@@ -1,0 +1,30 @@
+# Controller configuration
+ingress-nginx:
+controller:
+  ingressClassResource:
+    name: nginx
+    enabled: true
+    default: false  
+
+  service:
+    annotations:
+          service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+
+  ports:
+    http: 80
+    https: 443
+
+# Global host configuration
+host: change-me.example.com
+
+# services configuration
+featureFlags:
+  namespace: default
+
+grafana:
+  namespace: kps
+
+kibana:
+  namespace: default
+
+

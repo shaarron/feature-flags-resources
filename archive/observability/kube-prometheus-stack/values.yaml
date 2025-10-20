@@ -1,0 +1,10 @@
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+grafana:
+  persistence:
+    enabled: true
+# for local testing - disable node exporter    
+nodeExporter:
+  enabled: true

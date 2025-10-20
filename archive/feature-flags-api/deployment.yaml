@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: feature-flags-api
+  labels:
+    app: feature-flags-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: feature-flags-api
+  template:
+    metadata:
+      labels:
+        app: feature-flags-api
+    spec:
+      imagePullSecrets:
+        - name: ecr-creds 
+      containers:
+      - name: feature-flags-api
+        image: 869432184848.dkr.ecr.ap-south-1.amazonaws.com/feature-flags-service:latest
+        ports:
+        - containerPort: 5000
+        envFrom:
+        - secretRef:
+            name: mongo-secret
+        - configMapRef:
+            name: mongo-config
+        readinessProbe:
+          httpGet:
+            path: /flags       
+            port: 5000
+          initialDelaySeconds: 5   
+          periodSeconds: 10        
+          timeoutSeconds: 2        
+          failureThreshold: 3      
+          successThreshold: 1
+        livenessProbe:
+          httpGet:
+            path: /flags        
+            port: 5000
+          initialDelaySeconds: 15  
+          periodSeconds: 20
+          timeoutSeconds: 2
+          failureThreshold: 3
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "50m"
+          limits:
+            memory: "256Mi"
+            cpu: "100m"

@@ -1,0 +1,39 @@
+# namespace: mongodb
+
+# MongoDB Operator settings
+mongo:
+  name: mongo
+  version: "7.0.25"
+  members: 1
+  type: ReplicaSet
+
+  # Authentication
+  rootUser: root1
+  appUser: featureflags
+
+  # Database info
+  database: featureflags
+
+  # Persistent volume size
+  storageSize: 1Gi
+
+  # Resource requests and limits for MongoDB pods
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "100m"
+
+  # Authentication mode and SCRAM secrets (can usually stay default)
+  authenticationMode: ["SCRAM"]
+
+  # must be created - The name of the secret used by MongoDB to read passwords
+  secretName: mongo-secret
+
+  # Service settings — the app will connect to this host:port
+  service:
+    name: mongo
+    port: 27017
+    type: ClusterIP
