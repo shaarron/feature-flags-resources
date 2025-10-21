@@ -15,7 +15,8 @@ controller:
     https: 443
 
 # Global host configuration
-host: change-me.example.com
+host: example.com
+
 
 # services configuration
 featureFlags:
@@ -25,6 +26,6 @@ grafana:
   namespace: kps
 
 kibana:
-  namespace: default
+  namespace: efk
 
 

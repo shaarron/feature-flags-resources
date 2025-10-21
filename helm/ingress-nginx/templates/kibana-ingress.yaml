@@ -8,7 +8,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: kibana.{{ .Values.host }}
+    - host: kibana.{{ .Values.global.host | default .Values.host }}
       http:
         paths:
           - path: /

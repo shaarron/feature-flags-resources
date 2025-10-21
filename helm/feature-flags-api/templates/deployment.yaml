@@ -17,6 +17,18 @@ spec:
     spec:
       imagePullSecrets:
         {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+      initContainers:
+        - name: wait-for-mongo
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |
+              echo "Waiting for MongoDB..."
+              until nc -z mongo-svc.mongodb.svc.cluster.local 27017; do
+                sleep 3
+              done
+              echo "MongoDB is available!"
       containers:
         - name: feature-flags-api
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

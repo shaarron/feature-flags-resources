@@ -6,7 +6,3 @@ prometheus:
 grafana:
   persistence:
     enabled: true
-
-# Disable node exporter locally
-nodeExporter:
-  enabled: true
