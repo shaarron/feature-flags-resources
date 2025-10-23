@@ -2,7 +2,6 @@ apiVersion: mongodbcommunity.mongodb.com/v1
 kind: MongoDBCommunity
 metadata:
   name: mongo
-  namespace: {{ .Values.Namespace | default "mongodb" }}
  
 spec:
   members: {{ .Values.mongo.members }}
