@@ -4,7 +4,7 @@ metadata:
   name: mongodb-community-operator
   namespace: argocd
 spec:
-  project: system-apps
+  project: default
   source:
     repoURL: https://mongodb.github.io/helm-charts
     chart: community-operator

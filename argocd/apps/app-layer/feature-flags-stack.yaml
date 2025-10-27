@@ -4,7 +4,7 @@ metadata:
   name: feature-flags-stack
   namespace: argocd
 spec:
-  project: app-layer
+  project: default
   source:
     repoURL: git@github.com:shaarron/feature-flags-resources.git
     targetRevision: main

@@ -4,7 +4,7 @@ metadata:
   name: eck-operator
   namespace: argocd
 spec:
-  project: system-apps
+  project: default
   source:
     repoURL: https://helm.elastic.co
     chart: eck-operator
