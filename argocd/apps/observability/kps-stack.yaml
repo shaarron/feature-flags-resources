@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: git@github.com:shaarron/feature-flags-resources.git
     targetRevision: main
-    path: helm/observability/kps
+    path: helm/observability/kube-prometheus-stack
     helm:
       valueFiles:
         - values.yaml                
