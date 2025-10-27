@@ -45,7 +45,7 @@ fluent-bit:
       cpu: "200m"
       memory: "200Mi"
 
-  extraEnv:
+  env:
     - name: ES_PASSWORD
       valueFrom:
         secretKeyRef:
