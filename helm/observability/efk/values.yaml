@@ -45,6 +45,15 @@ fluent-bit:
       cpu: "200m"
       memory: "200Mi"
 
+  extraEnv:
+    - name: ES_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: elasticsearch-es-elastic-user
+          key: elastic
+    - name: ES_USER
+      value: elastic
+
   config:
     service: |
       [SERVICE]
@@ -96,8 +105,8 @@ fluent-bit:
           Match kube.*
           Host elasticsearch-es-http
           Port 9200
-          HTTP_User fluent
-          HTTP_Passwd changeme
+          HTTP_User ${ES_USER}
+          HTTP_Passwd ${ES_PASSWORD}
           tls Off
           Logstash_Format On
           Logstash_Prefix logstash
@@ -109,8 +118,8 @@ fluent-bit:
           Match host.*
           Host elasticsearch-es-http
           Port 9200
-          HTTP_User elastic
-          HTTP_Passwd changeme
+          HTTP_User ${ES_USER}
+          HTTP_Passwd ${ES_PASSWORD}
           tls Off
           Logstash_Format On
           Logstash_Prefix node
