@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: eck-operator
+  namespace: argocd
+spec:
+  project: system-apps
+  source:
+    repoURL: https://helm.elastic.co
+    chart: eck-operator
+    targetRevision: 3.1.0
+    helm:
+      parameters:
+        - name: installCRDs
+          value: "true"               
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: efk
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  syncOptions:
+    - CreateNamespace=true

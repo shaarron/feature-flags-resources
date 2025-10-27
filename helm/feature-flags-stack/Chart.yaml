@@ -22,6 +22,7 @@ dependencies:
     version: 1.0.0
     repository: "file://../observability/efk"
 
-  - name: kube-prometheus-stack
+  - name: kps
     version: 1.0.0
     repository: "file://../observability/kube-prometheus-stack"
+    alias: kps   

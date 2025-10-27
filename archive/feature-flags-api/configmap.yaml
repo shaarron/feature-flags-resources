@@ -3,6 +3,6 @@ kind: ConfigMap
 metadata:
   name: mongo-config
 data:
-  MONGO_HOST: mongo-svc.mongodb.svc.cluster.local
+  MONGO_HOST: mongo-svc.default.svc.cluster.local
   MONGO_INITDB_DATABASE : featureflags
   MONGO_REPLICA_SET: "true"

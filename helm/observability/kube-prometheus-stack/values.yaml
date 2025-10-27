@@ -1,8 +1,20 @@
-prometheus:
-  prometheusSpec:
-    serviceMonitorSelectorNilUsesHelmValues: false
-    podMonitorSelectorNilUsesHelmValues: false
+kube-prometheus-stack:
+  namespaceOverride: kps
 
-grafana:
-  persistence:
-    enabled: true
+  prometheus:
+    prometheusSpec:
+      serviceMonitorSelectorNilUsesHelmValues: false
+      serviceMonitorSelector: {}
+      podMonitorSelectorNilUsesHelmValues: false
+      podMonitorSelector: {}
+
+  grafana:
+    namespaceOverride: kps
+    persistence:
+      enabled: true
+
+  kube-state-metrics:
+    namespaceOverride: kps
+
+  prometheus-node-exporter:
+    namespaceOverride: kps

@@ -64,9 +64,9 @@ kubectl apply -f https://download.elastic.co/downloads/eck/3.1.0/operator.yaml
 
 ```bash
 helm upgrade --install community-operator mongodb/community-operator \
-  -n mongodb --create-namespace \
   --set operator.version=0.13.0 \
-  --set agent.version=12.0.25.7724-1 
+  --set agent.version=12.0.25.7724-1
+
 ```
 
 
@@ -89,18 +89,15 @@ kubectl create secret docker-registry ecr-creds \
 2. mongodb secrets for both defaults & mongodb namespaces
 
 ```bash
-kubectl create secret generic mongo-secret -n mongodb \
-  --from-literal=MONGO_INITDB_ROOT_PASSWORD='<root_user__password>' \
-  --from-literal=APP_USER_PASSWORD='<app_user_password>'
+kubectl create secret generic mongo-secret \                                     
+  --from-literal=MONGO_INITDB_ROOT_PASSWORD="$(openssl rand -base64 18 | base64 -w0)" \
+  --from-literal=APP_USER_PASSWORD="$(openssl rand -base64 18 | base64 -w0)"
 ```
 
-
+ to get the passwords
 ```bash
-kubectl create secret generic mongo-secret -n default \
-  --from-literal=MONGO_INITDB_ROOT_PASSWORD='<root_user__password>' \
-  --from-literal=APP_USER_PASSWORD='<app_user_password>'
+ kubectl get secret mongo-secret -o jsonpath='{.data}' | jq 'map_values(@base64d)'
 ```
-
 
 ## Helm deploy 
 

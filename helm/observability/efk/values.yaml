@@ -1,8 +1,5 @@
-# Global namespace for the stack
 namespace: efk
-# ──────────────────────────────────────────────
-# Elasticsearch (ECK)
-# ──────────────────────────────────────────────
+
 elasticsearch:
   version: "9.1.5"
   selfSignedDisabled: true
@@ -22,9 +19,6 @@ elasticsearch:
     accessModes: ["ReadWriteOnce"]
     size: 10Gi
 
-# ──────────────────────────────────────────────
-# Kibana (ECK)
-# ──────────────────────────────────────────────
 kibana:
   version: "9.1.5"
   count: 1
@@ -39,9 +33,6 @@ kibana:
     limits:
       memory: "2Gi"
 
-# ──────────────────────────────────────────────
-# Fluent Bit (official chart)
-# ──────────────────────────────────────────────
 fluent-bit:
   image:
     repository: fluent/fluent-bit

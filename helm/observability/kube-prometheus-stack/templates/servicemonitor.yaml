@@ -2,7 +2,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: feature-flags-api-monitor
-  namespace: default
+  namespace: {{ .Release.Namespace }}
   labels:
     app: feature-flags-api
     release: {{ .Release.Name }}

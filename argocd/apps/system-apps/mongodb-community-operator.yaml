@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mongodb-community-operator
+  namespace: argocd
+spec:
+  project: system-apps
+  source:
+    repoURL: https://mongodb.github.io/helm-charts
+    chart: community-operator
+    targetRevision: 0.13.0     # chart version (matches operator.version)
+    helm:
+      parameters:
+        - name: operator.version
+          value: "0.13.0"
+        - name: agent.version
+          value: "12.0.25.7724-1"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  syncOptions:
+    - CreateNamespace=true
