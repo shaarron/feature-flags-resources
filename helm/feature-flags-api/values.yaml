@@ -18,7 +18,7 @@ mongo:
   configMapName: mongo-config
    
   # ConfigMap data
-  rootUsername: root
+  rootUsername: root1
   host: mongo-svc.default.svc.cluster.local
   database: featureflags
   replicaSet: false
