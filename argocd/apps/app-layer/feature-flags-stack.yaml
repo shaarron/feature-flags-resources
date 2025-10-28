@@ -13,9 +13,9 @@ spec:
     helm:
       valueFiles:
         - values.yaml
-      parameters:
-        - name: global.host
-          value: "$ARGOCD_ENV_HOST"
+      values: |
+      global:
+        host: $ARGOCD_ENV_HOST   
 
   destination:
     server: https://kubernetes.default.svc
