@@ -15,17 +15,17 @@ spec:
         - values.yaml
       parameters:
         - name: global.host
-          value: dev.its-sharon.com
+          value: $ARGOCD_ENV_HOST
           forceString: true
 
   destination:
     server: https://kubernetes.default.svc
     namespace: default
 
-  dependsOn:
-    - prometheus-crds
-    - eck-operator
-    - mongodb-community-operator
+  # dependsOn:
+  #   - prometheus-crds
+  #   - eck-operator
+  #   - mongodb-community-operator
 
   syncPolicy:
     automated:
