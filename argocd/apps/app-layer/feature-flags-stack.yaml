@@ -9,13 +9,13 @@ spec:
     repoURL: git@github.com:shaarron/feature-flags-resources.git
     targetRevision: main
     path: helm/feature-flags-stack
-    
+
     helm:
       valueFiles:
         - values.yaml
       parameters:
         - name: global.host
-          value: $ARGOCD_ENV_HOST
+          value: dev.its-sharon.com
           forceString: true
 
   destination:
