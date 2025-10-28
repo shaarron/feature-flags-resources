@@ -9,13 +9,14 @@ spec:
     repoURL: git@github.com:shaarron/feature-flags-resources.git
     targetRevision: main
     path: helm/feature-flags-stack
-
+    
     helm:
       valueFiles:
         - values.yaml
-      values: |
-      global:
-        host: $ARGOCD_ENV_HOST   
+      parameters:
+        - name: global.host
+          value: $ARGOCD_ENV_HOST
+          forceString: true
 
   destination:
     server: https://kubernetes.default.svc
