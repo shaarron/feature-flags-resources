@@ -14,8 +14,6 @@ controller:
     http: 80
     https: 443
 
-# Global host configuration
-host: example.com
 
 
 # services configuration
