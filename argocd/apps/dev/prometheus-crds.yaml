@@ -9,8 +9,11 @@ spec:
   project: default
   source:
     repoURL: https://github.com/prometheus-community/helm-charts.git
-    targetRevision: kube-prometheus-stack-78.3.0
-    path: charts/kube-prometheus-stack/crds
+    chart: prometheus-operator-crds
+    targetRevision: 24.0.1
+    helm:
+      releaseName: prometheus-operator-crds
+
   destination:
     server: https://kubernetes.default.svc
     namespace: default
