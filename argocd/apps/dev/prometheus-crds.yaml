@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/prometheus-community/helm-charts.git
-    targetRevision: 78.3.0
+    targetRevision: kube-prometheus-stack-78.3.0
     path: charts/kube-prometheus-stack/crds
   destination:
     server: https://kubernetes.default.svc
