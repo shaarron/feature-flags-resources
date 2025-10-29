@@ -1,9 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  annotations:
-    argocd.argoproj.io/sync-wave: "2"
-  name: feature-flags-stack-dev
+  name: root-app-dev
   namespace: argocd
 spec:
   project: default
@@ -11,19 +9,16 @@ spec:
   source:
     repoURL: git@github.com:shaarron/feature-flags-resources.git
     targetRevision: main
-    path: helm/feature-flags-stack
-    helm:
-      valueFiles:
-        - values-dev.yaml
+    path: argocd/apps/dev
+    directory:
+      recurse: true
+      include: |
+        system-apps/*.yaml
+        dev/*.yaml
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: default
-
-  # dependsOn:
-  #   - prometheus-crds
-  #   - eck-operator
-  #   - mongodb-community-operator
+    namespace: argocd
 
   syncPolicy:
     automated:
@@ -31,5 +26,3 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-
-

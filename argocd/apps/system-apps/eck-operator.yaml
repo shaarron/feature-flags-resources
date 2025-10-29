@@ -3,6 +3,8 @@ kind: Application
 metadata:
   name: eck-operator
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
   source:
@@ -13,7 +15,7 @@ spec:
       parameters:
         - name: installCRDs
           value: "true"               
-  destination:
+  destination: 
     server: https://kubernetes.default.svc
     namespace: efk
   syncPolicy:
