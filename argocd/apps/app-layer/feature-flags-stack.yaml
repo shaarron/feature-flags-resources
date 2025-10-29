@@ -10,22 +10,14 @@ spec:
     targetRevision: main
     path: helm/feature-flags-stack
 
-    helm:
-      valueFiles:
-        - values.yaml
-      parameters:
-        - name: global.host
-          value: $ARGOCD_ENV_HOST
-          forceString: true
-
   destination:
     server: https://kubernetes.default.svc
     namespace: default
 
-  # dependsOn:
-  #   - prometheus-crds
-  #   - eck-operator
-  #   - mongodb-community-operator
+  dependsOn:
+    - prometheus-crds
+    - eck-operator
+    - mongodb-community-operator
 
   syncPolicy:
     automated:

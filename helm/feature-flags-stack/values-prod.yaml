@@ -1,6 +1,6 @@
 # Global overrides for all subcharts
 global:
-  host: ""
+  host: its-sharon.com
 
 
 feature-flags-api:
