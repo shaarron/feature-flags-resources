@@ -7,3 +7,9 @@ feature-flags-api:
   image:
     repository: 869432184848.dkr.ecr.ap-south-1.amazonaws.com/feature-flags-service
     tag: latest
+
+kps:  
+  grafana:
+    enabled: true
+  prometheus:
+    enabled: true
