@@ -1,0 +1,33 @@
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: kibana
+  namespace: {{ .Values.namespace | default "efk" }}
+
+spec:
+  version: {{ .Values.kibana.version | default "9.1.5" | quote }}
+
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: {{ .Values.kibana.selfSignedDisabled | default true }}
+
+  count: {{ .Values.kibana.count | default 1 }}
+
+  elasticsearchRef:
+    name: {{ .Values.kibana.elasticsearchRef | default "elasticsearch" | quote }}
+
+  config:
+    xpack.security.secureCookies: {{ .Values.kibana.secureCookies | default false }}
+    server.publicBaseUrl: {{ .Values.kibana.publicBaseUrl | quote }}
+
+  podTemplate:
+    spec:
+      containers:
+        - name: kibana
+          resources:
+            requests:
+              cpu: {{ .Values.kibana.resources.requests.cpu | quote }}
+              memory: {{ .Values.kibana.resources.requests.memory | quote }}
+            limits:
+              memory: {{ .Values.kibana.resources.limits.memory | quote }}

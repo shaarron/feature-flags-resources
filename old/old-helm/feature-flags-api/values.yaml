@@ -1,0 +1,47 @@
+replicaCount: 2
+
+image:
+  repository: 869432184848.dkr.ecr.ap-south-1.amazonaws.com/feature-flags-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+imagePullSecrets:
+  - name: ecr-creds
+
+service:
+  type: ClusterIP
+  port: 5000
+
+mongo:
+  # Reference to existing secret and configmap
+  secretName: mongo-secret  
+  configMapName: mongo-config
+   
+  # ConfigMap data
+  rootUsername: root1
+  host: mongo-svc.default.svc.cluster.local
+  database: featureflags
+  replicaSet: false
+
+readinessProbe:
+  path: /flags
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 2
+  failureThreshold: 3
+  successThreshold: 1
+
+livenessProbe:
+  path: /flags
+  initialDelaySeconds: 15
+  periodSeconds: 20
+  timeoutSeconds: 2
+  failureThreshold: 3
+
+resources:
+  requests:
+    memory: "128Mi"
+    cpu: "50m"
+  limits:
+    memory: "256Mi"
+    cpu: "100m"
