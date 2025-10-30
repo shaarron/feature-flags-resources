@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: feature-flags-ingress
+  namespace: default
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: feature-flags.{{ .Values.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: feature-flags-api-service
+                port:
+                  number: 5000
