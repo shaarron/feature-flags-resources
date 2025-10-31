@@ -1,0 +1,359 @@
+---
+# Source: efk/charts/fluent-bit/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: efk-fluent-bit
+  namespace: default
+  labels:
+    helm.sh/chart: fluent-bit-0.54.0
+    app.kubernetes.io/name: fluent-bit
+    app.kubernetes.io/instance: efk
+    app.kubernetes.io/version: "4.1.0"
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: efk/charts/fluent-bit/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: efk-fluent-bit
+  namespace: default
+  labels:
+    helm.sh/chart: fluent-bit-0.54.0
+    app.kubernetes.io/name: fluent-bit
+    app.kubernetes.io/instance: efk
+    app.kubernetes.io/version: "4.1.0"
+    app.kubernetes.io/managed-by: Helm
+data:
+  custom_parsers.conf: |
+    [PARSER]
+        Name nginx
+        Format regex
+        Regex ^(?<remote>[^ ]*) - (?<user>[^ ]*) \\[(?<time>[^\\]]*)\\] "(?<method>\\S+)(?: +(?<path>[^\\"]*?)(?: +\\S*)?)?" (?<code>[^ ]*) (?<size>[^ ]*) "(?<referer>[^\\"]*)" "(?<agent>[^\\"]*)" (?<request_length>[^ ]*) (?<request_time>[^ ]*) \\[(?<proxy_upstream_name>[^ ]*)\\] (?<upstream_addr>[^ ]*) (?<upstream_response_length>[^ ]*) (?<upstream_response_time>[^ ]*) (?<upstream_status>[^ ]*) (?<host>[^ ]*) (?<server_protocol>[^ ]*)
+        Time_Key time
+        Time_Format %d/%b/%Y:%H:%M:%S %z
+    
+    [PARSER]
+        Name json_parser
+        Format json
+        Time_Key time
+        Time_Format %Y-%m-%dT%H:%M:%S.%NZ
+  fluent-bit.conf: |
+    [SERVICE]
+        Daemon Off
+        Flush 1
+        Log_Level debug
+        Parsers_File /fluent-bit/etc/parsers.conf
+        Parsers_File /fluent-bit/etc/conf/custom_parsers.conf
+        HTTP_Server On
+        HTTP_Listen 0.0.0.0
+        HTTP_Port 2020
+        Health_Check On
+        Trace_Error On
+    
+    [INPUT]
+        Name tail
+        Path /var/log/containers/*.log
+        multiline.parser docker, cri
+        Tag kube.*
+        Mem_Buf_Limit 1MB
+        Skip_Long_Lines On
+        Refresh_Interval 10
+    
+    [INPUT]
+        Name systemd
+        Tag host.*
+        Systemd_Filter _SYSTEMD_UNIT=kubelet.service
+        Read_From_Tail On
+    
+    [FILTER]
+        Name kubernetes
+        Match kube.*
+        Merge_Log On
+        Keep_Log On
+        K8S-Logging.Parser On
+    
+    [FILTER]
+        Name parser
+        Match kube.ingress.*
+        Key_Name log
+        Parser nginx
+        Reserve_Data On
+    
+    [OUTPUT]
+        Name es
+        Match kube.*
+        Host elasticsearch-es-http
+        Port 9200
+        HTTP_User ${ES_USER}
+        HTTP_Passwd ${ES_PASSWORD}
+        tls Off
+        Logstash_Format On
+        Logstash_Prefix logstash
+        Retry_Limit False
+        Suppress_Type_Name On
+    
+    [OUTPUT]
+        Name es
+        Match host.*
+        Host elasticsearch-es-http
+        Port 9200
+        HTTP_User ${ES_USER}
+        HTTP_Passwd ${ES_PASSWORD}
+        tls Off
+        Logstash_Format On
+        Logstash_Prefix node
+        Retry_Limit False
+        Suppress_Type_Name On
+---
+# Source: efk/charts/fluent-bit/templates/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: efk-fluent-bit
+  labels:
+    helm.sh/chart: fluent-bit-0.54.0
+    app.kubernetes.io/name: fluent-bit
+    app.kubernetes.io/instance: efk
+    app.kubernetes.io/version: "4.1.0"
+    app.kubernetes.io/managed-by: Helm
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - namespaces
+      - pods
+    verbs:
+      - get
+      - list
+      - watch
+---
+# Source: efk/charts/fluent-bit/templates/clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: efk-fluent-bit
+  labels:
+    helm.sh/chart: fluent-bit-0.54.0
+    app.kubernetes.io/name: fluent-bit
+    app.kubernetes.io/instance: efk
+    app.kubernetes.io/version: "4.1.0"
+    app.kubernetes.io/managed-by: Helm
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: efk-fluent-bit
+subjects:
+  - kind: ServiceAccount
+    name: efk-fluent-bit
+    namespace: default
+---
+# Source: efk/charts/fluent-bit/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: efk-fluent-bit
+  namespace: default
+  labels:
+    helm.sh/chart: fluent-bit-0.54.0
+    app.kubernetes.io/name: fluent-bit
+    app.kubernetes.io/instance: efk
+    app.kubernetes.io/version: "4.1.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 2020
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: fluent-bit
+    app.kubernetes.io/instance: efk
+---
+# Source: efk/charts/fluent-bit/templates/daemonset.yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: efk-fluent-bit
+  namespace: default
+  labels:
+    helm.sh/chart: fluent-bit-0.54.0
+    app.kubernetes.io/name: fluent-bit
+    app.kubernetes.io/instance: efk
+    app.kubernetes.io/version: "4.1.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: fluent-bit
+      app.kubernetes.io/instance: efk
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: fluent-bit
+        app.kubernetes.io/instance: efk
+      annotations:
+        checksum/config: f4c94a5f9696a045467da5cd4d754b14b43c482c4fcb628c79d308f74012a668
+    spec:
+      
+      serviceAccountName: efk-fluent-bit
+      hostNetwork: false
+      dnsPolicy: ClusterFirst
+      containers:
+        - name: fluent-bit
+          image: "fluent/fluent-bit:latest"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: ES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: elastic
+                  name: elasticsearch-es-elastic-user
+            - name: ES_USER
+              value: elastic
+          command:
+            - /fluent-bit/bin/fluent-bit
+          args:
+            - --workdir=/fluent-bit/etc
+            - --config=/fluent-bit/etc/conf/fluent-bit.conf
+          ports:
+            - name: http
+              containerPort: 2020
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: http
+          resources:
+            limits:
+              cpu: 200m
+              memory: 200Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          volumeMounts:
+            - name: config
+              mountPath: /fluent-bit/etc/conf
+            - mountPath: /var/log
+              name: varlog
+            - mountPath: /var/lib/docker/containers
+              name: varlibdockercontainers
+              readOnly: true
+            - mountPath: /etc/machine-id
+              name: etcmachineid
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: efk-fluent-bit
+        - hostPath:
+            path: /var/log
+          name: varlog
+        - hostPath:
+            path: /var/lib/docker/containers
+          name: varlibdockercontainers
+        - hostPath:
+            path: /etc/machine-id
+            type: File
+          name: etcmachineid
+---
+# Source: efk/templates/elasticsearch.yaml
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: elasticsearch
+  namespace: efk
+spec:
+  version: "9.1.5"
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
+
+  nodeSets:
+    - name: default
+      count: 1
+      config:
+        node.store.allow_mmap: false
+      podTemplate:
+        spec:
+          containers:
+            - name: elasticsearch
+              resources:
+                limits:
+                  cpu: "1"
+                  memory: 2Gi
+                requests:
+                  cpu: 400m
+                  memory: 2Gi
+      volumeClaimTemplates:
+        - metadata:
+            name: elasticsearch-data
+          spec:
+            accessModes: 
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 10Gi
+---
+# Source: efk/templates/kibana.yaml
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: kibana
+  namespace: efk
+
+spec:
+  version: "9.1.5"
+
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
+
+  count: 1
+
+  elasticsearchRef:
+    name: "elasticsearch"
+
+  config:
+    xpack.security.secureCookies: false
+    server.publicBaseUrl: "http://kibana.its-sharon.com"
+
+  podTemplate:
+    spec:
+      containers:
+        - name: kibana
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              memory: "2Gi"
+---
+# Source: efk/charts/fluent-bit/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "efk-fluent-bit-test-connection"
+  namespace: default
+  labels:
+    helm.sh/chart: fluent-bit-0.54.0
+    app.kubernetes.io/version: "4.1.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    helm.sh/hook: test
+    helm.sh/hook-delete-policy: hook-succeeded
+spec:
+  containers:
+    - name: wget
+      image: "busybox:latest"
+      imagePullPolicy: Always
+      command: ["sh"]
+      args: ["-c", "sleep 5s && wget -O- efk-fluent-bit:2020"]
+  restartPolicy: Never
