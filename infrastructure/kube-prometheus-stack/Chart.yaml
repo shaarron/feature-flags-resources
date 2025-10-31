@@ -1,0 +1,10 @@
+apiVersion: v2
+name: kube-prometheus-stack
+description: Wrapper for kube-prometheus-stack with custom values
+type: application
+version: 1.0.0
+appVersion: "v0.86.0"
+dependencies:
+  - name: kube-prometheus-stack
+    version: 78.3.0
+    repository: "https://prometheus-community.github.io/helm-charts"
