@@ -1,6 +1,0 @@
-apiVersion: v2
-name: mongodb
-description: MongoDB chart for the Feature Flags project using ECK operator
-type: application
-version: 1.0.0
-appVersion: "7.0.25"
