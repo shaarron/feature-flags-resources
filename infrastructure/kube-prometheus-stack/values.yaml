@@ -17,11 +17,8 @@ kube-prometheus-stack:
     namespaceOverride: kps
 
   prometheus-node-exporter:
-    enabled: false
-    # namespaceOverride: kps
-  nodeExporter:
-    enabled: false
-    # namespaceOverride: kps
+    namespaceOverride: kps
+
 
 global:
   host: ""     
