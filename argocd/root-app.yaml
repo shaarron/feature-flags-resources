@@ -3,6 +3,8 @@ kind: Application
 metadata:
   name: root-app
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
   labels:
     app.kubernetes.io/name: root-app
   annotations:
@@ -12,7 +14,7 @@ spec:
 
   source:
     repoURL: git@github.com:shaarron/feature-flags-resources.git
-    targetRevision: main
+    targetRevision: argo-app-set
     path: argocd/applications
     directory:
       recurse: true
