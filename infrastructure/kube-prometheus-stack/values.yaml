@@ -1,6 +1,3 @@
-global:
-  host: ""  # Provided by ArgoCD
-
 kube-prometheus-stack:
   namespaceOverride: kps
 
@@ -15,13 +12,6 @@ kube-prometheus-stack:
     namespaceOverride: kps
     persistence:
       enabled: true
-    ingress:
-      enabled: true
-      ingressClassName: nginx
-      annotations: {}
-      hosts:
-        - grafana.{{ .Values.global.host }}
-      path: /
 
   kube-state-metrics:
     namespaceOverride: kps
