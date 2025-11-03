@@ -16,7 +16,7 @@ spec:
     helm:
       releaseName: kube-prometheus-stack
       valueFiles:
-        - ../../argocd/values.yaml
+        - values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: kps

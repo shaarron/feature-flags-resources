@@ -16,7 +16,7 @@ spec:
     helm:
       releaseName: efk
       valueFiles:
-        - ../../argocd/values.yaml
+        - values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: efk 
