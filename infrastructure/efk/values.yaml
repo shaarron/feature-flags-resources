@@ -1,6 +1,6 @@
 global:
-  host: its-sharon.com
-  
+  host: ""  # Provided by ArgoCD
+
 namespace: efk
 
 elasticsearch:
@@ -28,7 +28,7 @@ kibana:
   selfSignedDisabled: true
   elasticsearchRef: "elasticsearch"
   secureCookies: false
-  publicBaseUrl: "http://kibana.its-sharon.com"
+  publicBaseUrl: "http://kibana.{{ .Values.global.host }}"
   resources:
     requests:
       cpu: "500m"

@@ -11,6 +11,9 @@ spec:
     repoURL: git@github.com:shaarron/feature-flags-resources.git
     targetRevision: main
     path: applications/feature-flags
+    helm:
+      valueFiles:
+        - ../../argocd/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: default

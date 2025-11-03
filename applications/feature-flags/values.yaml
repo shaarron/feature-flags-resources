@@ -43,5 +43,8 @@ resources:
     memory: "256Mi"
     cpu: "100m"
 
+global:
+  host: ""  # Provided by ArgoCD
+
 ingress:
-  host: its-sharon.com
+  host: ""  # Uses global.host from ArgoCD values
