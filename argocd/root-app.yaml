@@ -3,8 +3,6 @@ kind: Application
 metadata:
   name: root-app
   namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
   labels:
     app.kubernetes.io/name: root-app
   annotations:
@@ -22,7 +20,7 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
-
+  
   syncPolicy:
     automated:
       prune: true

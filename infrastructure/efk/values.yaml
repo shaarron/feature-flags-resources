@@ -1,5 +1,5 @@
 global:
-  host: ""  # Provided by ArgoCD
+  host: ""  
 
 namespace: efk
 
