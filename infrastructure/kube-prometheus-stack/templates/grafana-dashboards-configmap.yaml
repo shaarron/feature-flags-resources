@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: feature-flags-grafana-dashboards
+  namespace: kps
+  labels:
+    grafana_dashboard: "1"
+data:
+  feature-flags-overview.json: |
+    {{ .Files.Get "dashboards/grafana-dash.json" | nindent 4 }}

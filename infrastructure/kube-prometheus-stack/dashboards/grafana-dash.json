@@ -1,0 +1,64 @@
+{
+  "dashboard": {
+    "title": "Flask App Monitoring",
+    "panels": [
+      {
+        "title": "HTTP Request Rate",
+        "targets": [
+          {
+            "expr": "rate(flask_http_request_total[5m])",
+            "legendFormat": "{{method}} {{status}}"
+          }
+        ],
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+      },
+      {
+        "title": "HTTP Error Rate (5xx)",
+        "targets": [
+          {
+            "expr": "rate(flask_http_request_total{status=~\"5..\"}[5m])",
+            "legendFormat": "{{method}} - {{status}}"
+          }
+        ],
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+      },
+      {
+        "title": "Response Time (p95)",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(flask_http_request_duration_seconds_bucket[5m]))",
+            "legendFormat": "{{path}}"
+          }
+        ],
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+      },
+      {
+        "title": "Pod CPU Usage",
+        "targets": [
+          {
+            "expr": "rate(container_cpu_usage_seconds_total{pod=~\"flask-app.*\"}[5m])",
+            "legendFormat": "{{pod}}"
+          }
+        ],
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+      },
+      {
+        "title": "Pod Memory Usage",
+        "targets": [
+          {
+            "expr": "container_memory_usage_bytes{pod=~\"flask-app.*\"} / 1024 / 1024",
+            "legendFormat": "{{pod}} (MB)"
+          }
+        ],
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 16}
+      }
+    ],
+    "refresh": "30s",
+    "time": {"from": "now-1h", "to": "now"}
+  }
+}

@@ -12,6 +12,12 @@ kube-prometheus-stack:
     namespaceOverride: kps
     persistence:
       enabled: true
+    
+    sidecar:
+      dashboards:
+        enabled: true
+        label: grafana_dashboard
+        searchNamespace: ALL
 
   kube-state-metrics:
     namespaceOverride: kps
