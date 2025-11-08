@@ -22,8 +22,10 @@ kube-prometheus-stack:
   kube-state-metrics:
     namespaceOverride: kps
 
+  # prometheus-node-exporter:
+  #   namespaceOverride: kps
   prometheus-node-exporter:
-    namespaceOverride: kps
+    enabled: false
 
 
 global:
