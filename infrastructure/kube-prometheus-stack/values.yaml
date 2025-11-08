@@ -19,8 +19,6 @@ kube-prometheus-stack:
         label: grafana_dashboard
         searchNamespace: ALL
 
-    dashboardsConfigMaps:
-      - feature-flags-grafana-dashboards
 
   kube-state-metrics:
     namespaceOverride: kps
