@@ -7,4 +7,4 @@ metadata:
     grafana_dashboard: "1"
 data:
   feature-flags-overview.json:
-    {{ .Files.Get "dashboards/grafana-dash.json" | nindent 4 }}
+    {{ .Files.Get "grafana-dash.json" | nindent 4 }}
