@@ -26,6 +26,9 @@ kube-prometheus-stack:
   #   namespaceOverride: kps
   prometheus-node-exporter:
     enabled: false
+  prometheus-node-exporter:
+    nodeExporter:
+      enabled: false
 
 
 global:
