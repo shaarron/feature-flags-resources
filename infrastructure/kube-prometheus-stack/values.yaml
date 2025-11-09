@@ -1,3 +1,4 @@
+host: "its-sharon.com"     
 kube-prometheus-stack:
   namespaceOverride: kps
 
@@ -12,16 +13,22 @@ kube-prometheus-stack:
     namespaceOverride: kps
     persistence:
       enabled: true
-    ingress:
-      enabled: true
-      ingressClassName: nginx
-      annotations:
-        nginx.ingress.kubernetes.io/rewrite-target: /
-      hosts:
-        - grafana.its-sharon.com
+    
+    sidecar:
+      dashboards:
+        enabled: true
+        label: grafana_dashboard
+        searchNamespace: ALL
+
 
   kube-state-metrics:
     namespaceOverride: kps
 
   prometheus-node-exporter:
-    namespaceOverride: kps
+     namespaceOverride: kps
+     
+# for local testing - disable node exporter
+  # nodeExporter:
+  #   enabled: false
+  # exporter:
+  #   enabled: false

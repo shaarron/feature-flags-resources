@@ -12,15 +12,15 @@ spec:
 
   source:
     repoURL: git@github.com:shaarron/feature-flags-resources.git
-    targetRevision: main
-    path: argocd/applications
+    targetRevision: argo-app-set
+    path: argocd/applications 
     directory:
       recurse: true
 
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
-
+  
   syncPolicy:
     automated:
       prune: true

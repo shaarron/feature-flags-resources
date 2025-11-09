@@ -1,14 +1,26 @@
-# Feature Flags App — GitOps Infrastructure
+# Feature Flags Resources
 
 This repository contains the **infrastructure manifests** for deploying [**Feature Flags App**](https://github.com/shaarron/feature-flags-app). 
 
 
 **Feature Flags App** running on **Amazon EKS**, managed with **Argo CD** and **Helm**, following modern GitOps principles - “App-of-Apps” pattern.
 
-### componenets overview 
+**Components overview**
 - **Core App**: Feature Flags API (with MongoDB & Nginx) 
 - **Monitoring**: Kube-Prometheus-Stack (Prometheus, Grafana)  
-- **Logging**: EFK Stack (Elasticsearch, Fluent Bit, Kibana)  
+- **Logging**: EFK Stack (Elasticsearch, Fluent Bit, Kibana)
+
+
+## Table Of Contents
+- [Feature Flags Resources](#feature-flags-resources)
+  - [Table Of Contents](#table-of-contents)
+  - [Argocd Deployment Flow](#argocd-deployment-flow)
+  - [Stack Components order](#stack-components-order)
+  - [Argocd directory structure](#argocd-directory-structure)
+  - [Grafana Dashboard: Feature Flags API Monitoring](#grafana-dashboard-feature-flags-api-monitoring)
+  - [Deploy Locally](#deploy-locally)
+    - [Login to argocd CLI](#login-to-argocd-cli)
+    - [Login trough UI](#login-trough-ui)
 
 
 ## Argocd Deployment Flow
@@ -31,13 +43,13 @@ graph TD
 ## Stack Components order
 
 | Component               | Namespace        | Sync Wave | Notes |
-|------------------------|------------------|-----------|-------|
+|-------------------------|------------------|-----------|-------|
 | Namespaces             | `argocd`         | `0`       | Ensures required namespaces exist |
 | MongoDB Operator       | `mongodb`        | `0`       | Installs MongoDB Community Operator |
 | ECK Operator           | `elastic-system` | `0`       | Deploys ECK operator for Elasticsearch & Kibana |
-| Kube Prometheus Stack  | `kps`            | `2`       | Metrics stack (Prometheus, Grafana, etc.) |
+| Kube Prometheus Stack  | `kps`            | `1`       | Metrics stack (Prometheus, Grafana, etc.) |
+| EFK Stack              | `efk`            | `2`       | Fluent Bit → Elasticsearch → Kibana |
 | Feature Flags API      | `default`        | `3`       | Flask-based API for toggling flags |
-| EFK Stack              | `efk`            | `3`       | Fluent Bit → Elasticsearch → Kibana |
 
 ---
 
@@ -58,6 +70,18 @@ graph TD
 3. **Applications**
    - Deploy **Feature-Flags API** + MongoDB  
  
+## Grafana Dashboard: Feature Flags API Monitoring
+This Grafana dashboard monitors the Feature Flags API on Kubernetes.
+Provisioned via the kube-prometheus-stack Helm chart (ConfigMap: ```feature-flags-grafana-dashboards```), it combines Flask app metrics (```prometheus_flask_exporter```) with Kubernetes metrics from Prometheus to visualize traffic, performance, and resource usage.
+
+
+| **Panel**              | **Metric**                                                                                     | **Description**                                                                                     |
+|-------------------------|-----------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| **HTTP Request Rate**   | `rate(flask_http_request_total[5m])`                                                          | Displays the rate of incoming HTTP requests handled by the Flask API over the last 5 minutes. Useful for understanding load and usage patterns. |
+| **HTTP Error Rate (5xx)** | `rate(flask_http_request_total{status=~"5.."}[5m])`                                          | Shows the rate of server-side errors (5xx) to detect application or backend failures.               |
+| **Response Time (p95)** | `histogram_quantile(0.95, rate(flask_http_request_duration_seconds_bucket[5m]))`              | Indicates the 95th percentile response time of API requests, representing typical user latency under load. |
+| **Pod CPU Usage**       | `rate(container_cpu_usage_seconds_total{pod=~"flask-app.*"}[5m])`                             | Monitors CPU utilization of the Flask application pods to identify performance or scaling issues.   |
+| **Pod Memory Usage**    | `container_memory_usage_bytes{pod=~"flask-app.*"} / 1024 / 1024`                              | Tracks memory consumption (in MB) of each Flask application pod to detect memory leaks or resource exhaustion. |
 
 
 ## Deploy Locally

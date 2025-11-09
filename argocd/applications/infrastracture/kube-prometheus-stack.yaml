@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: git@github.com:shaarron/feature-flags-resources.git
-    targetRevision: main
+    targetRevision: argo-app-set
     path: infrastructure/kube-prometheus-stack
     helm:
       releaseName: kube-prometheus-stack
@@ -20,7 +20,7 @@ spec:
     automated:
       prune: true
       selfHeal: true
-  syncOptions:
-    - CreateNamespace=true
-    - ServerSideApply=true
-    - CRDs=true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      - CRDs=true

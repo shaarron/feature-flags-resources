@@ -43,5 +43,5 @@ resources:
     memory: "256Mi"
     cpu: "100m"
 
-ingress:
-  host: its-sharon.com
+host: "its-sharon.com"
+
