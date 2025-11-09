@@ -44,7 +44,5 @@ resources:
     cpu: "100m"
 
 global:
-  host: ""  # Provided by ArgoCD
+  host: "" 
 
-ingress:
-  host: ""  # Uses global.host from ArgoCD values
