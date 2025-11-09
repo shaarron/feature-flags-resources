@@ -9,8 +9,8 @@ data:
   feature-flags-overview.json: |
     {
       "id": null,
-      "uid": "flask-app-monitoring",
-      "title": "Flask App Monitoring",
+      "uid": "feature-flags-monitoring",
+      "title": "Feature Flags Monitoring",
       "tags": ["flask", "api", "feature-flags"],
       "timezone": "browser",
       "schemaVersion": 36,
