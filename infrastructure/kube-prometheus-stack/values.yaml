@@ -1,3 +1,4 @@
+host: "its-sharon.com"     
 kube-prometheus-stack:
   namespaceOverride: kps
 
@@ -34,6 +35,3 @@ kube-prometheus-stack:
     enabled: false
   exporter:
     enabled: false
-
-
-  host: "its-sharon.com"     
