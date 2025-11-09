@@ -12,8 +12,7 @@ spec:
     targetRevision: argo-app-set
     path: applications/feature-flags
     helm:
-      valueFiles:
-        - values.yaml
+      releaseName: feature-flags
 
   destination:
     server: https://kubernetes.default.svc

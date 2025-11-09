@@ -30,7 +30,10 @@ kube-prometheus-stack:
   prometheus-node-exporter:
     nodeExporter:
       enabled: false
+  nodeExporter:
+    enabled: false
+  exporter:
+    enabled: false
 
 
-global:
-  host: ""     
+  host: "its-sharon.com"     

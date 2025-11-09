@@ -2,3 +2,6 @@
 *.secrets.yml
 **/charts/
 **/Chart.lock
+# macOS system files
+.DS_Store
+__MACOSX/

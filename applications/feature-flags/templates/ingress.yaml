@@ -6,7 +6,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: feature-flags.{{ .Values.global.host }}
+    - host: feature-flags.{{ .Values.host }}
       http:
         paths:
           - path: /

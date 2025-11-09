@@ -1,5 +1,5 @@
-global:
-  host: ""  
+
+host: "its-sharon.com"  
 
 namespace: efk
 

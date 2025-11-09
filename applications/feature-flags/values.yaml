@@ -43,6 +43,5 @@ resources:
     memory: "256Mi"
     cpu: "100m"
 
-global:
-  host: "" 
+host: "its-sharon.com"
 
