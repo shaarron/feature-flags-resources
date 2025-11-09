@@ -24,14 +24,11 @@ kube-prometheus-stack:
   kube-state-metrics:
     namespaceOverride: kps
 
-  # prometheus-node-exporter:
-  #   namespaceOverride: kps
   prometheus-node-exporter:
-    enabled: false
-  prometheus-node-exporter:
-    nodeExporter:
-      enabled: false
-  nodeExporter:
-    enabled: false
-  exporter:
-    enabled: false
+     namespaceOverride: kps
+     
+# for local testing - disable node exporter
+  # nodeExporter:
+  #   enabled: false
+  # exporter:
+  #   enabled: false
