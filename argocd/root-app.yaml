@@ -13,7 +13,7 @@ spec:
   source:
     repoURL: git@github.com:shaarron/feature-flags-resources.git
     targetRevision: argo-app-set
-    path: argocd/applications
+    path: argocd/applications 
     directory:
       recurse: true
 
