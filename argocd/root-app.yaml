@@ -8,7 +8,7 @@ spec:
   project: default
 
   source:
-    repoURL: git@github.com:shaarron/feature-flags-resources.git
+    repoURL: https://github.com/shaarron/feature-flags-resources.git
     targetRevision: main
     path: argocd/applications 
     directory:
