@@ -15,7 +15,7 @@ spec:
       releaseName: kube-prometheus-stack
       values: |
         global:
-          host: {{ .Values.global.host }}
+          host: its-sharon.com
           
   destination:
     server: https://kubernetes.default.svc

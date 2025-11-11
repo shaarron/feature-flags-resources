@@ -13,10 +13,6 @@ spec:
     path: argocd/applications 
     directory:
       recurse: true
-    helm:
-      values: |
-        global:
-          host: its-sharon.com
 
   destination:
     server: https://kubernetes.default.svc
