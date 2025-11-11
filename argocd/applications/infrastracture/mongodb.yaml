@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: git@github.com:shaarron/feature-flags-resources.git
-    targetRevision: argo-app-set
+    targetRevision: main
     path: infrastructure/mongodb
   destination:
     server: https://kubernetes.default.svc
