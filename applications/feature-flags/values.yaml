@@ -1,3 +1,4 @@
+host: ""
 replicaCount: 2
 
 image:
@@ -42,6 +43,3 @@ resources:
   limits:
     memory: "256Mi"
     cpu: "100m"
-
-host: "its-sharon.com"
-

@@ -1,5 +1,5 @@
 
-host: "its-sharon.com"  
+host: ""  
 
 namespace: efk
 
@@ -25,10 +25,7 @@ elasticsearch:
 kibana:
   version: "9.1.5"
   count: 1
-  selfSignedDisabled: true
   elasticsearchRef: "elasticsearch"
-  secureCookies: false
-  publicBaseUrl: "http://kibana.{{ .Values.global.host }}"
   resources:
     requests:
       cpu: "500m"

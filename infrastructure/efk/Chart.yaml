@@ -5,9 +5,7 @@ type: application
 version: 1.0.0
 appVersion: "1.0.0"
 
-# Dependencies that make up the stack
 dependencies:
-  # Fluent Bit (official chart)
   - name: fluent-bit
     version: 0.54.0
     repository: "https://fluent.github.io/helm-charts"

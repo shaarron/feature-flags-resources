@@ -1,4 +1,4 @@
-host: "its-sharon.com"     
+host: ""     
 kube-prometheus-stack:
   namespaceOverride: kps
 
