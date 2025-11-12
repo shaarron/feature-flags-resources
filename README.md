@@ -6,22 +6,17 @@ This repository contains the **infrastructure manifests** for deploying [**Featu
 **Feature Flags App** running on **Amazon EKS**, managed with **Argo CD** and **Helm**, following modern GitOps principles - “App-of-Apps” pattern.
 
 **Components overview**
-- **Core App**: Feature Flags API (with MongoDB & Nginx) 
+- **Core App**: Feature Flags API (with MongoDB) 
 - **Monitoring**: Kube-Prometheus-Stack (Prometheus, Grafana)  
 - **Logging**: EFK Stack (Elasticsearch, Fluent Bit, Kibana)
 
 
 ## Table Of Contents
-- [Feature Flags Resources](#feature-flags-resources)
-  - [Table Of Contents](#table-of-contents)
-  - [Argocd Deployment Flow](#argocd-deployment-flow)
-  - [Stack Components order](#stack-components-order)
-  - [Argocd directory structure](#argocd-directory-structure)
-  - [Grafana Dashboard: Feature Flags API Monitoring](#grafana-dashboard-feature-flags-api-monitoring)
-  - [Deploy Locally](#deploy-locally)
-    - [Login to argocd CLI](#login-to-argocd-cli)
-    - [Login trough UI](#login-trough-ui)
-
+  - **[Argocd Deployment Flow](#argocd-deployment-flow)**
+  - **[Sync waves](#sync-waves)**
+  - **[Argocd Applications Structure](#argocd-applications-structure)**
+  - **[Grafana Dashboards](#grafana-dashboard-feature-flags-api-monitoring)**
+  - **[Deploy Locally](#deploy-locally)**
 
 ## Argocd Deployment Flow
 
@@ -35,25 +30,26 @@ graph TD
   A --> C[Infrastructure Layer]
   C --> C1[Kube-Prometheus-Stack]
   C --> C2[EFK Stack]
+  C --> C3[MongoDB]
   A --> D[Application Layer]
-  D --> D1[Feature-Flags App + MongoDB]
+  D --> D1[Feature-Flags App]
 ```
 
 
-## Stack Components order
+## Sync waves
 
 | Component               | Namespace        | Sync Wave | Notes |
 |-------------------------|------------------|-----------|-------|
 | Namespaces             | `argocd`         | `0`       | Ensures required namespaces exist |
 | MongoDB Operator       | `mongodb`        | `0`       | Installs MongoDB Community Operator |
-| ECK Operator           | `elastic-system` | `0`       | Deploys ECK operator for Elasticsearch & Kibana |
+| ECK Operator           | `elastic-system` | `0`       | Deploys ECK operator(Elasticsearch & Kibana) |
 | Kube Prometheus Stack  | `kps`            | `1`       | Metrics stack (Prometheus, Grafana, etc.) |
 | EFK Stack              | `efk`            | `2`       | Fluent Bit → Elasticsearch → Kibana |
-| Feature Flags API      | `default`        | `3`       | Flask-based API for toggling flags |
+| Feature Flags API      | `default`        | `3`       | Python Flask-based API for toggling flags |
 
 ---
 
-## Argocd directory structure
+## Argocd Applications Structure
  
 1. **Bootstrap**
    - Create namespaces
@@ -62,13 +58,14 @@ graph TD
  
 
 2. **Infrastructure**
-   - Deploy **kube-prometheus-stack** (**kps** namespace)
-   - Deploy **EFK** (**efk** namespace)
+   - Deploy **kube-prometheus-stack**
+   - Deploy **MongoDB**
+   - Deploy **EFK**
      - [ECK](https://www.elastic.co/docs/deploy-manage/deploy/cloud-on-k8s) (**Elasic Cloud Kubernetes** - for Elasticsearch & kibana) 
      - Fluent Bit 
 
 3. **Applications**
-   - Deploy **Feature-Flags API** + MongoDB  
+   - Deploy **Feature-Flags API**
  
 ## Grafana Dashboard: Feature Flags API Monitoring
 This Grafana dashboard monitors the Feature Flags API on Kubernetes.

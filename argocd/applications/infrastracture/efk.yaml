@@ -4,7 +4,7 @@ metadata:
   name: efk
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "2"     # deploys after operators, before app
+    argocd.argoproj.io/sync-wave: "2" 
 spec:
   project: default
   source:
