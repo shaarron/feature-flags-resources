@@ -13,11 +13,9 @@ spec:
     path: applications/feature-flags
     helm:
       releaseName: feature-flags
-      valuesFrom:
-        - configMapKeyRef:
-            name: helm-values
-            key: values.yaml
-            namespace: argocd
+      parameters:
+        - name: global.host
+          value: {{ .Values.global.host }}
 
   destination:
     server: https://kubernetes.default.svc
