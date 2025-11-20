@@ -14,8 +14,9 @@ spec:
     helm:
       releaseName: feature-flags
       valuesFrom:
-        - configMap:
-            name: helm-values # created by terraform
+        - configMapKeyRef:
+            name: helm-values
+            key: values.yaml
             namespace: argocd
 
   destination:

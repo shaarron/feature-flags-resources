@@ -14,8 +14,9 @@ spec:
     helm:
       releaseName: kube-prometheus-stack
       valuesFrom:
-        - configMap:
+        - configMapKeyRef:
             name: helm-values
+            key: values.yaml
             namespace: argocd
   destination:
     server: https://kubernetes.default.svc

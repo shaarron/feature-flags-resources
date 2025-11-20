@@ -14,8 +14,9 @@ spec:
     helm:
       releaseName: efk
       valuesFrom:
-        - configMap:
-            name: helm-values 
+        - configMapKeyRef:
+            name: helm-values
+            key: values.yaml
             namespace: argocd
   destination:
     server: https://kubernetes.default.svc
