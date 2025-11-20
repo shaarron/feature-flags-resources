@@ -11,12 +11,8 @@ spec:
     repoURL: https://github.com/shaarron/feature-flags-resources.git
     targetRevision: app-of-apps-fixes
     path: argocd/applications
-    helm:
-      valueFiles:
-        - values.yaml
-      valuesObject:
-        global:
-          host: ""  # Injected by Terraform
+    directory:
+      recurse: true
 
   destination:
     server: https://kubernetes.default.svc

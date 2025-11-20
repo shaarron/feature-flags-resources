@@ -13,9 +13,9 @@ spec:
     path: infrastructure/efk
     helm:
       releaseName: efk
-      parameters:
-        - name: global.host
-          value: {{ .Values.global.host }}
+      values: |
+        global:
+          host: its-sharon.com
   destination:
     server: https://kubernetes.default.svc
     namespace: efk 
