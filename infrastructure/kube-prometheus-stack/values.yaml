@@ -1,4 +1,6 @@
-host: ""     
+global:
+  host: ""
+
 kube-prometheus-stack:
   namespaceOverride: kps
 
