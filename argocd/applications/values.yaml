@@ -1,0 +1,5 @@
+global:
+  hostedZoneId: ""
+  domainName: ""
+  environment: ""
+  clusterName: ""

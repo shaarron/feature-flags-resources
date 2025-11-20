@@ -5,6 +5,10 @@ metadata:
   namespace: kps
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - grafana.{{ .Values.global.host }}
+      secretName: wildcard-its-sharon-com-tls
   rules:
     - host: grafana.{{ .Values.global.host }}
       http:

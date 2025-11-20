@@ -1,27 +1,29 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: feature-flags
+  name: efk
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-wave: "2" 
 spec:
   project: default
   source:
     repoURL: https://github.com/shaarron/feature-flags-resources.git
-    targetRevision: main
-    path: applications/feature-flags
+    targetRevision: feature/app-of-apps-fixes
+    path: infrastructure/efk
     helm:
-      releaseName: feature-flags
-      values: |
-        global:
-          host: its-sharon.com
+      releaseName: efk
+      valuesFrom:
+        - configMap:
+            name: helm-values 
+            namespace: argocd
   destination:
     server: https://kubernetes.default.svc
-    namespace: default
+    namespace: efk 
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true

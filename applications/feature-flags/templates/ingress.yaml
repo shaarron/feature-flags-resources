@@ -5,6 +5,11 @@ metadata:
   namespace: default
 spec:
   ingressClassName: nginx
+  tls:
+  - hosts:
+      - feature-flags.{{ .Values.global.host }}
+    secretName: wildcard-its-sharon-com-tls
+
   rules:
     - host: feature-flags.{{ .Values.global.host }}
       http:

@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: mongodb
+  name: kube-prometheus-stack
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "2"
@@ -9,14 +9,22 @@ spec:
   project: default
   source:
     repoURL: https://github.com/shaarron/feature-flags-resources.git
-    targetRevision: main
-    path: infrastructure/mongodb
+    targetRevision: feature/app-of-apps-fixes
+    path: infrastructure/kube-prometheus-stack
+    helm:
+      releaseName: kube-prometheus-stack
+      valuesFrom:
+        - configMap:
+            name: helm-values
+            namespace: argocd
   destination:
     server: https://kubernetes.default.svc
-    namespace: default
+    namespace: kps
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true
+      - CRDs=true

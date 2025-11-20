@@ -9,10 +9,15 @@ spec:
 
   source:
     repoURL: https://github.com/shaarron/feature-flags-resources.git
-    targetRevision: main
+    targetRevision: feature/app-of-apps-fixes
     path: argocd/applications 
     directory:
       recurse: true
+    helm:
+      valuesFrom:
+        - configMap:
+            name: helm-values  # Created by Terraform
+            namespace: argocd
 
   destination:
     server: https://kubernetes.default.svc

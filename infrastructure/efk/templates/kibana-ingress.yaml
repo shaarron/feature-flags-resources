@@ -7,6 +7,10 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - kibana.{{ .Values.global.host }}
+      secretName: wildcard-its-sharon-com-tls
   rules:
     - host: kibana.{{ .Values.global.host }}
       http:
