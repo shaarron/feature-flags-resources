@@ -1,0 +1,10 @@
+# Enable cert-manager subchart
+cert-manager:
+  enabled: true
+  crds:
+    enabled: true
+  serviceAccount:
+    name: cert-manager
+    create: true
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::869432184848:role/cert-manager-dns01

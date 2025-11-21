@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cert-manager-controller
+  name: cert-manager
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
@@ -9,18 +9,9 @@ spec:
   project: default
 
   source:
-    repoURL: https://charts.jetstack.io
-    chart: cert-manager
-    targetRevision: v1.19.1
-    helm:
-      values: |
-        crds:
-          enabled: true
-        serviceAccount:
-          name: cert-manager
-          create: true
-          annotations:
-            eks.amazonaws.com/role-arn: arn:aws:iam::869432184848:role/cert-manager-dns01
+    repoURL: https://github.com/shaarron/feature-flags-resources.git
+    path: applications/cert-manager
+    targetRevision: app-of-apps-fixes
 
   destination:
     server: https://kubernetes.default.svc
