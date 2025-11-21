@@ -1,6 +1,8 @@
 global:
   host: "its-sharon.com"
 
+tlsSecretName: "its-sharon-com-tls"
+
 kube-prometheus-stack:
   nodeExporter:
     enabled: false
@@ -12,3 +14,5 @@ kube-prometheus-stack:
 #   domainName: "its-sharon.com"
 #   environment: ""
 #   clusterName: ""
+# kibana 
+# publicBaseUrl: "https://kibana.{{ .Values.global.host }}"

@@ -12,4 +12,4 @@ spec:
       - dns01:
           route53:
             region: ap-south-1
-            hostedZoneID: "<HOSTED_ZONE_ID>"
+            hostedZoneID: Z10244981ZAMIY8KVE0M3

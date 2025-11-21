@@ -1,5 +1,6 @@
 global:
   host: ""
+tlsSecretName: ""
 
 namespace: efk
 
@@ -33,7 +34,6 @@ kibana:
     limits:
       memory: "2Gi"
   # publicBaseUrl: "https://kibana.{{ .Values.global.host }}"
-  publicBaseUrl: "http://localhost:5601"
 
 fluent-bit:
   image:
