@@ -1,5 +1,8 @@
 global:
-  hostedZoneId: ""
-  domainName: ""
-  environment: ""
-  clusterName: ""
+  host: "its-sharon.com"
+
+# global:
+#   hostedZoneId: ""
+#   domainName: "its-sharon.com"
+#   environment: ""
+#   clusterName: ""

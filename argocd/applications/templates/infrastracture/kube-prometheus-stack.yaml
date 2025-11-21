@@ -13,9 +13,8 @@ spec:
     path: infrastructure/kube-prometheus-stack
     helm:
       releaseName: kube-prometheus-stack
-      values: |
-        global:
-          host: its-sharon.com
+      valuesFiles:
+      - values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: kps

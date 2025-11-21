@@ -13,9 +13,8 @@ spec:
     path: applications/feature-flags
     helm:
       releaseName: feature-flags
-      values: |
-        global:
-          host: its-sharon.com
+      valuesFiles:
+      - values.yaml
 
   destination:
     server: https://kubernetes.default.svc
