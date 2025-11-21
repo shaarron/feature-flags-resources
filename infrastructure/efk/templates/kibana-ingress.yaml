@@ -7,10 +7,6 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   ingressClassName: nginx
-  tls:
-    - hosts:
-        - kibana.{{ .Values.global.host }}
-      secretName: {{ .Values.tlsSecretName }}
   rules:
     - host: kibana.{{ .Values.global.host }}
       http:
