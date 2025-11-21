@@ -5,12 +5,14 @@ metadata:
   namespace: efk
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    acme.cert-manager.io/http01-edit-in-place: "true"
 spec:
   ingressClassName: nginx
   tls:
     - hosts:
         - kibana.{{ .Values.global.host }}
-      secretName: wildcard-its-sharon-com-tls
+      secretName: {{ .Values.tlsSecretName }}
   rules:
     - host: kibana.{{ .Values.global.host }}
       http:
