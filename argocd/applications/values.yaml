@@ -1,6 +1,12 @@
 global:
   host: "its-sharon.com"
 
+kube-prometheus-stack:
+  nodeExporter:
+    enabled: false
+  exporter:
+    enabled: false
+
 # global:
 #   hostedZoneId: ""
 #   domainName: "its-sharon.com"
