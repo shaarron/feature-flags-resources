@@ -14,7 +14,7 @@ spec:
     helm:
       releaseName: feature-flags
       valuesFiles:
-      - values.yaml
+      - ../../argocd/applications/values.yaml
 
   destination:
     server: https://kubernetes.default.svc
