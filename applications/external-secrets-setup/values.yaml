@@ -1,0 +1,14 @@
+# External Secrets ServiceAccount configuration
+serviceAccount:
+  name: external-secrets-sa
+  namespace: external-secrets
+  iamRoleArn: arn:aws:iam::869432184848:role/external-secrets-role
+
+# ClusterSecretStore configuration
+clusterSecretStore:
+  name: aws-secret-store
+  syncWave: "2"
+  provider:
+    aws:
+      service: SecretsManager
+      region: ap-south-1
