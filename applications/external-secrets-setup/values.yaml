@@ -2,6 +2,7 @@
 external-secrets:
   enabled: true
   installCRDs: true
+  fullnameOverride: external-secrets
   serviceAccount:
     create: false
     name: external-secrets-sa
