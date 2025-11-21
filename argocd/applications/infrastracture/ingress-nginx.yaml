@@ -13,6 +13,13 @@ spec:
     targetRevision: 4.13.3
     helm:
       releaseName: ingress-nginx
+      values: |
+        controller:
+          service:
+            annotations:
+              service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+              service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+
   destination:
     server: https://kubernetes.default.svc
     namespace: ingress-nginx
