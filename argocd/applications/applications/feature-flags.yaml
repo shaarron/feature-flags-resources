@@ -13,7 +13,7 @@ spec:
     path: applications/feature-flags
     helm:
       releaseName: feature-flags
-      valuesFiles:
+      valueFiles:
       - ../../argocd/applications/values.yaml
 
   destination:
