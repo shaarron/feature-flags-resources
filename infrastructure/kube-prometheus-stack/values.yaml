@@ -12,6 +12,9 @@ kube-prometheus-stack:
       podMonitorSelector: {}
 
   grafana:
+    admin:
+      existingSecret: grafna-credentials
+      existingSecretPasswordKey: PASSWORD
     namespaceOverride: kps
     persistence:
       enabled: true
