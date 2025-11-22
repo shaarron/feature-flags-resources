@@ -14,6 +14,7 @@ kube-prometheus-stack:
   grafana:
     admin:
       existingSecret: grafna-credentials
+      existingSecretUserKey: USER
       existingSecretPasswordKey: PASSWORD
     namespaceOverride: kps
     persistence:
