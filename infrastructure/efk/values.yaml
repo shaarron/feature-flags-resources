@@ -60,7 +60,7 @@ fluent-bit:
     service: |
       [SERVICE]
           Daemon Off
-          Flush 1
+          Flush 5
           Log_Level info
           Parsers_File /fluent-bit/etc/parsers.conf
           Parsers_File /fluent-bit/etc/conf/custom_parsers.conf
@@ -76,7 +76,7 @@ fluent-bit:
           Path /var/log/containers/*.log
           multiline.parser docker, cri
           Tag kube.*
-          Mem_Buf_Limit 1MB
+          Mem_Buf_Limit 20MB
           Skip_Long_Lines On
           Refresh_Interval 10
 
@@ -98,18 +98,21 @@ fluent-bit:
           K8S-Logging.Parser On
 
       [FILTER]
-          Name kubernetes
-          Match kube.*
-          Merge_Log On
-          Keep_Log On
-          K8S-Logging.Parser On
-
-      [FILTER]
           Name parser
           Match kube.ingress.*
           Key_Name log
           Parser nginx
           Reserve_Data On
+      
+      [FILTER]
+        Name   grep
+        Match  kube.*
+        Exclude kubernetes.container_name fluent-bit
+      
+      [FILTER]
+        Name   grep
+        Match  kube.*
+        Regex  kubernetes.namespace_name (default|efk|kps)
 
     outputs: |
       [OUTPUT]
@@ -121,9 +124,10 @@ fluent-bit:
           HTTP_Passwd ${ES_PASSWORD}
           tls Off
           Logstash_Format On
-          Logstash_Prefix logstash
-          Retry_Limit False
+          Logstash_Prefix logs
+          Retry_Limit 20
           Suppress_Type_Name On
+          Compress gzip
 
       [OUTPUT]
           Name es
@@ -135,8 +139,9 @@ fluent-bit:
           tls Off
           Logstash_Format On
           Logstash_Prefix node
-          Retry_Limit False
+          Retry_Limit 20
           Suppress_Type_Name On
+          Compress gzip
 
     customParsers: |
       [PARSER]
