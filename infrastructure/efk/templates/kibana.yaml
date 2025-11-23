@@ -23,6 +23,53 @@ spec:
 
   podTemplate:
     spec:
+      # ---------------------------------------------------------
+      # 1. ADD VOLUMES (mount dashboard ConfigMap)
+      # ---------------------------------------------------------
+      volumes:
+        - name: dashboards
+          configMap:
+            name: {{ .Values.kibana.dashboardsConfigMap | default "ff-kibana-dashboard" | quote }}
+
+      # ---------------------------------------------------------
+      # 2. INIT CONTAINER — import dashboards before Kibana starts
+      # ---------------------------------------------------------
+      initContainers:
+        - name: import-dashboards
+          image: curlimages/curl:8.7.1
+          command: ["sh", "-c"]
+          args:
+            - |
+              echo "Waiting for Kibana to become ready...";
+              until curl -s -o /dev/null -w "%{http_code}" http://kibana:5601/api/saved_objects/_find | grep -q "200"; do
+                echo "Still waiting...";
+                sleep 5;
+              done
+
+              echo "Kibana is ready. Importing dashboards...";
+              for f in /dashboards/*.ndjson; do
+                echo "Importing $f";
+                curl -X POST \
+                  -u elastic:${ELASTIC_PASSWORD} \
+                  -H "kbn-xsrf: true" \
+                  --form file=@$f \
+                  http://kibana:5601/api/saved_objects/_import?overwrite=true;
+              done
+
+          env:
+            - name: ELASTIC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.kibana.elasticPasswordSecret | default "elasticsearch-es-elastic-user" | quote }}
+                  key: elastic
+
+          volumeMounts:
+            - name: dashboards
+              mountPath: /dashboards
+
+      # ---------------------------------------------------------
+      # 3. MAIN KIBANA CONTAINER
+      # ---------------------------------------------------------
       containers:
         - name: kibana
           resources:

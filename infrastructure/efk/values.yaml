@@ -33,7 +33,7 @@ kibana:
       memory: "1Gi"
     limits:
       memory: "2Gi"
-  # publicBaseUrl: "https://kibana.{{ .Values.global.host }}"
+  publicBaseUrl: "https://kibana.its-sharon.com"
 
 fluent-bit:
   image:
