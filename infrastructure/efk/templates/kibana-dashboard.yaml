@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: kibana-dashboard
-  namespace: elastic-system
+  namespace: efk
   labels:
     kibana.k8s.elastic.co/name: "kibana"
 data:
