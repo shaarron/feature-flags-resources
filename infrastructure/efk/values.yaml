@@ -105,14 +105,14 @@ fluent-bit:
           Reserve_Data On
       
       [FILTER]
-          Name   grep
-          Match  kube.*
+          Name grep
+          Match kube.*
           Exclude kubernetes.container_name fluent-bit
         
       [FILTER]
-          Name   grep
-          Match  kube.*
-          Regex  kubernetes.namespace_name (default|efk|kps)
+          Name grep
+          Match kube.*
+          Regex kubernetes.namespace_name (default|efk|kps)
 
     outputs: |
       [OUTPUT]
