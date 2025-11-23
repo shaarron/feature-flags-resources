@@ -10,7 +10,7 @@ spec:
 
   source:
     repoURL: https://github.com/shaarron/feature-flags-resources.git
-    path: infrastracture/cert-manager
+    path: infrastructure/cert-manager
     targetRevision: app-of-apps-fixes
 
   destination:
