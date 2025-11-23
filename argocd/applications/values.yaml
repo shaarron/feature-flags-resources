@@ -4,10 +4,11 @@ global:
 tlsSecretName: "its-sharon-com-tls"
 
 kube-prometheus-stack:
-  nodeExporter:
-    enabled: false
-  exporter:
-    enabled: false
+# for local testing - disable node exporter
+  # nodeExporter:
+  #   enabled: false
+  # exporter:
+  #   enabled: false
 
 # global:
 #   hostedZoneId: ""

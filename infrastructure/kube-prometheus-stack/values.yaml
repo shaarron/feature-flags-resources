@@ -32,9 +32,4 @@ kube-prometheus-stack:
 
   prometheus-node-exporter:
      namespaceOverride: kps
-     
-# for local testing - disable node exporter
-  nodeExporter:
-    enabled: false
-  exporter:
-    enabled: false
+    
