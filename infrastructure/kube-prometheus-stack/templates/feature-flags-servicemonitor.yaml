@@ -5,7 +5,7 @@ metadata:
   namespace: kps
   labels:
     app: feature-flags-api
-    release: kps
+    release: kube-prometheus-stack
 spec:
   selector:
     matchLabels:
