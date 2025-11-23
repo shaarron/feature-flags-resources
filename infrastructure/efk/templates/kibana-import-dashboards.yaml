@@ -1,0 +1,47 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kibana-import-dashboards
+  namespace: efk
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+
+      volumes:
+        - name: dashboards
+          configMap:
+            name: kibana-dashboard
+
+      containers:
+        - name: importer
+          image: curlimages/curl:8.7.1
+          command: ["sh", "-c"]
+          args:
+            - |
+              echo "Waiting for Kibana to be ready..."
+              until curl -s -o /dev/null -w "%{http_code}" http://kibana-kb-http:5601/api/status | grep -q "200"; do
+                echo "Still waiting..."
+                sleep 5
+              done
+
+              echo "Importing dashboards..."
+              for f in /dashboards/*.ndjson; do
+                echo "Importing $f"
+                curl -X POST \
+                  -u elastic:${ELASTIC_PASSWORD} \
+                  -H "kbn-xsrf: true" \
+                  --form file=@$f \
+                  http://kibana-kb-http:5601/api/saved_objects/_import?overwrite=true
+              done
+
+          env:
+            - name: ELASTIC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: elasticsearch-es-elastic-user
+                  key: elastic
+
+          volumeMounts:
+            - name: dashboards
+              mountPath: /dashboards
