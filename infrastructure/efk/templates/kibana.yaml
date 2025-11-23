@@ -29,7 +29,7 @@ spec:
       volumes:
         - name: dashboards
           configMap:
-            name: {{ .Values.kibana.dashboardsConfigMap | default "ff-kibana-dashboard" | quote }}
+            name: {{ .Values.kibana.dashboardsConfigMap | default "kibana-dashboard" | quote }}
 
       # ---------------------------------------------------------
       # 2. INIT CONTAINER — import dashboards before Kibana starts
