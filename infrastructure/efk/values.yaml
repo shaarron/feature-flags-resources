@@ -123,7 +123,7 @@ fluent-bit:
           HTTP_User ${ES_USER}
           HTTP_Passwd ${ES_PASSWORD}
           tls Off
-          Logstash_Format On
+          Time_Key @timestamp
           Logstash_Prefix logs
           Retry_Limit 20
           Suppress_Type_Name On
@@ -137,7 +137,7 @@ fluent-bit:
           HTTP_User ${ES_USER}
           HTTP_Passwd ${ES_PASSWORD}
           tls Off
-          Logstash_Format On
+          Time_Key @timestamp
           Logstash_Prefix node
           Retry_Limit 20
           Suppress_Type_Name On
