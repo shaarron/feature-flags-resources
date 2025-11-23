@@ -61,7 +61,7 @@ fluent-bit:
       [SERVICE]
           Daemon Off
           Flush 1
-          Log_Level debug
+          Log_Level info
           Parsers_File /fluent-bit/etc/parsers.conf
           Parsers_File /fluent-bit/etc/conf/custom_parsers.conf
           HTTP_Server On
