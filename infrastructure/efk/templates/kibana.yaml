@@ -41,7 +41,7 @@ spec:
           args:
             - |
               echo "Waiting for Kibana to become ready...";
-              until curl -s -o /dev/null -w "%{http_code}" http://kibana:5601/api/saved_objects/_find | grep -q "200"; do
+              until curl -s -o /dev/null -w "%{http_code}" http://kibana-kb-http:5601/api/saved_objects/_find | grep -q "200"; do
                 echo "Still waiting...";
                 sleep 5;
               done
@@ -53,7 +53,7 @@ spec:
                   -u elastic:${ELASTIC_PASSWORD} \
                   -H "kbn-xsrf: true" \
                   --form file=@$f \
-                  http://kibana:5601/api/saved_objects/_import?overwrite=true;
+                  http://kibana-kb-http:5601/api/saved_objects/_import?overwrite=true;
               done
 
           env:
