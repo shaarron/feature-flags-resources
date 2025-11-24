@@ -8,7 +8,8 @@ elasticsearch:
   version: "9.1.5"
   selfSignedDisabled: true
   nodeSetName: "default"
-  nodeCount: 3
+  #change to ha later
+  nodeCount: 1
   allowMmap: false
 
   resources:
