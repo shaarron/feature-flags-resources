@@ -22,14 +22,13 @@ kube-prometheus-stack:
 
     dashboards:
       feature-flags:
-        feature-flags-api-monitor.json: |
-          json: {{ .Files.Get "feature-flags-api-monitor.json" | toYaml | indent 10 }} 
+        feature-flags-api-monitor.json: 
+          json: |
+            {{ .Files.Get "feature-flags-api-monitor.json" | indent 10 }} 
     
-    # sidecar:
-    #   dashboards:
-    #     enabled: true
-    #     label: grafana_dashboard
-    #     searchNamespace: kps
+    sidecar:
+      dashboards:
+        enabled: true
 
 
   kube-state-metrics:
