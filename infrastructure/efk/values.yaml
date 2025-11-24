@@ -114,7 +114,7 @@ fluent-bit:
       [FILTER]
           Name parser
           Match kube.*
-          Key_Name log
+          Key_Name log_entry
           Parser json
           Reserve_Data On
 
