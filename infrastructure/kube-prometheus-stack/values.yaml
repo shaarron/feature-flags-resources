@@ -19,10 +19,10 @@ kube-prometheus-stack:
     namespaceOverride: kps
     persistence:
       enabled: true
-      
+
     dashboards:
       feature-flags:
-        feature-flags-api-monitor.json: 
+        feature-flags-api-monitor.json: |
           json: {{ .Files.Get "feature-flags-api-monitor.json" | toYaml | indent 10 }} 
     
     # sidecar:
