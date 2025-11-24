@@ -19,17 +19,12 @@ kube-prometheus-stack:
     namespaceOverride: kps
     persistence:
       enabled: true
-
-    dashboards:
-      feature-flags:
-        feature-flags-api-monitor.json: 
-          json: |
-            {{ .Files.Get "feature-flags-api-monitor.json" | indent 10 }} 
     
     sidecar:
       dashboards:
         enabled: true
-
+        label: grafana_dashboard
+        labelValue: "1"
 
   kube-state-metrics:
     namespaceOverride: kps
