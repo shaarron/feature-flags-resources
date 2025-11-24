@@ -76,7 +76,7 @@ fluent-bit:
           Name tail
           Path /var/log/containers/*.log
           multiline.parser docker, cri
-          Tag kube.*
+          Tag kube.${namespace_name}.${pod_name}.${container_name}
           Mem_Buf_Limit 15MB
           Skip_Long_Lines On
           Refresh_Interval 10
@@ -99,20 +99,15 @@ fluent-bit:
           Kube_CA_File /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
           Kube_Token_File /var/run/secrets/kubernetes.io/serviceaccount/token
 
+      # Parse NGINX access logs (ingress-nginx controller)
       [FILTER]
           Name parser
-          Match kube.ingress.*
+          Match kube.ingress-nginx.*
           Key_Name log
           Parser nginx
           Reserve_Data On
 
-      [FILTER]
-          Name parser
-          Match kube.*
-          Key_Name log
-          Parser json
-          Reserve_Data On
-      
+      # Remove fluent-bit's own logs
       [FILTER]
           Name grep
           Match kube.*
