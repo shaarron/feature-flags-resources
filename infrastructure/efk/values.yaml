@@ -118,6 +118,11 @@ fluent-bit:
           Parser python_json
           Reserve_Data On
 
+      [FILTER]
+          Name modify
+          Match kube.*
+          Add service_name ${kubernetes['labels']['app']}
+
     outputs: |
       [OUTPUT]
           Name es
