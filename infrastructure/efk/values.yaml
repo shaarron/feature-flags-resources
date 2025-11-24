@@ -105,6 +105,13 @@ fluent-bit:
           Key_Name log
           Parser nginx
           Reserve_Data On
+
+      [FILTER]
+          Name parser
+          Match kube.*
+          Key_Name log
+          Parser json
+          Reserve_Data On
       
       [FILTER]
           Name grep
