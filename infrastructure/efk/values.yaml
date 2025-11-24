@@ -13,7 +13,7 @@ elasticsearch:
 
   resources:
     requests:
-      cpu: 400m
+      cpu: 300m
       memory: 2Gi
     limits:
       cpu: "1"
@@ -29,7 +29,7 @@ kibana:
   elasticsearchRef: "elasticsearch"
   resources:
     requests:
-      cpu: "500m"
+      cpu: "400m"
       memory: "1Gi"
     limits:
       memory: "2Gi"
