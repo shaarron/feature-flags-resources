@@ -76,7 +76,7 @@ fluent-bit:
           Name tail
           Path /var/log/containers/*.log
           multiline.parser docker, cri
-          Tag kube.*
+          Tag kube.${namespace_name}.${pod_name}.${container_name}
           Mem_Buf_Limit 15MB
           Skip_Long_Lines On
           Refresh_Interval 10
@@ -110,11 +110,6 @@ fluent-bit:
           Name grep
           Match kube.*
           Exclude kubernetes.container_name fluent-bit
-
-      [FILTER]
-          Name grep
-          Match kube.*
-          Regex kubernetes.namespace_name (default|efk|kps)
 
     outputs: |
       [OUTPUT]
