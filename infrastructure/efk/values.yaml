@@ -76,7 +76,7 @@ fluent-bit:
           Name tail
           Path /var/log/containers/*.log
           multiline.parser docker, cri
-          Tag kube.var.log.containers.${pod_name}_${namespace_name}_${container_name}.log
+          Tag kube.*
           Mem_Buf_Limit 15MB
           Skip_Long_Lines On
           Refresh_Interval 10
@@ -121,7 +121,7 @@ fluent-bit:
       [FILTER]
           Name modify
           Match kube.*
-          Add service_name ${kubernetes['labels']['app']}
+          Copy kubernetes.labels.app service_name
 
     outputs: |
       [OUTPUT]
