@@ -99,7 +99,6 @@ fluent-bit:
           Kube_CA_File /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
           Kube_Token_File /var/run/secrets/kubernetes.io/serviceaccount/token
 
-      # Parse NGINX access logs (ingress-nginx controller)
       [FILTER]
           Name parser
           Match kube.ingress-nginx.*
@@ -107,11 +106,17 @@ fluent-bit:
           Parser nginx
           Reserve_Data On
 
-      # Remove fluent-bit's own logs
       [FILTER]
           Name grep
           Match kube.*
           Exclude kubernetes.container_name fluent-bit
+
+      [FILTER]
+          Name parser
+          Match kube.*
+          Key_Name log
+          Parser python_json
+          Reserve_Data On
 
     outputs: |
       [OUTPUT]
@@ -151,7 +156,7 @@ fluent-bit:
           Time_Format %d/%b/%Y:%H:%M:%S %z
 
       [PARSER]
-          Name json_parser
+          Name python_json
           Format json
-          Time_Key time
-          Time_Format %Y-%m-%dT%H:%M:%S.%NZ
+          Time_Key asctime
+          Time_Format %Y-%m-%d %H:%M:%S,%L
