@@ -20,11 +20,11 @@ kube-prometheus-stack:
     persistence:
       enabled: true
     
-    sidecar:
-      dashboards:
-        enabled: true
-        label: grafana_dashboard
-        searchNamespace: ALL
+    # sidecar:
+    #   dashboards:
+    #     enabled: true
+    #     label: grafana_dashboard
+    #     searchNamespace: ALL
 
 
   kube-state-metrics:
