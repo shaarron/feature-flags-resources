@@ -115,7 +115,7 @@ fluent-bit:
           Name parser
           Match kube.*
           Key_Name log
-          Parser python_json
+          Parser json
           Reserve_Data On
 
       [FILTER]
@@ -161,7 +161,7 @@ fluent-bit:
           Time_Format %d/%b/%Y:%H:%M:%S %z
 
       [PARSER]
-          Name python_json
+          Name json
           Format json
           Time_Key asctime
           Time_Format %Y-%m-%d %H:%M:%S,%L
