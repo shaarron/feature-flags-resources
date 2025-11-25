@@ -93,6 +93,8 @@ fluent-bit:
           Match kube.*
           Merge_Log On
           Keep_Log On
+          Labels Off
+          Annotations Off
           K8S-Logging.Parser On
 
       [FILTER]
@@ -123,7 +125,6 @@ fluent-bit:
           Port 9200
           HTTP_User ${ES_USER}
           HTTP_Passwd ${ES_PASSWORD}
-          tls Off
           Logstash_Format On
           Logstash_Prefix node
           Retry_Limit False
