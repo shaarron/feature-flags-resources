@@ -22,14 +22,14 @@ spec:
               # --- STEP 1: ELASTICSEARCH INDEX TEMPLATE ---
               echo "1. Waiting for Elasticsearch..."
               # Using -k because internal ES certificates are self-signed
-              until curl -s -k -u elastic:${ELASTIC_PASSWORD} https://elasticsearch-es-http:9200/_cat/health; do
+              until curl -s -k -u elastic:${ELASTIC_PASSWORD} http://elasticsearch-es-http:9200/_cat/health; do
                 echo "Waiting for ES..."
                 sleep 5
               done
 
               echo "Pushing Index Template..."
               # Upload the index_template.json file from the ConfigMap
-              curl -X PUT "https://elasticsearch-es-http:9200/_index_template/feature-flags-api" \
+              curl -X PUT "http://elasticsearch-es-http:9200/_index_template/feature-flags-api" \
                    -u elastic:${ELASTIC_PASSWORD} \
                    -k \
                    -H "Content-Type: application/json" \
