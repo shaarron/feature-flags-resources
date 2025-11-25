@@ -104,11 +104,11 @@ fluent-bit:
           Reserve_Data On
 
       [FILTER]
-        Name parser
-        Match kube.*
-        Key_Name log
-        Parser json_strict
-        Reserve_Data On
+          Name parser
+          Match kube.*
+          Key_Name log
+          Parser json_strict
+          Reserve_Data On
 
       [FILTER]
           Name grep
