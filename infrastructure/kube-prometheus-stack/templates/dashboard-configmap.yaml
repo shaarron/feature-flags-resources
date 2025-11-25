@@ -124,7 +124,7 @@ data:
             {
               "datasource": "$datasource",
               "expr": "sum by (status, method, handler) (rate(flask_http_request_total[5m]))",
-              "legendFormat": "{{status}} {{method}} {{handler}}",
+              "legendFormat": "{{ "{{" }}status{{ "}}" }} {{ "{{" }}method{{ "}}" }} {{ "{{" }}handler{{ "}}" }}",
               "refId": "A"
             }
           ],
@@ -425,7 +425,7 @@ data:
               "datasource": "$datasource",
               "editorMode": "code",
               "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{pod=~\"feature-flags-api-.*\", image!=\"\", container!=\"POD\"}[5m]))",
-              "legendFormat": "{{pod}}",
+              "legendFormat": "{{ "{{" }}pod{{ "}}" }}",
               "range": true,
               "refId": "A"
             }
@@ -521,7 +521,7 @@ data:
               "datasource": "$datasource",
               "editorMode": "code",
               "expr": "container_memory_usage_bytes{pod=~\"feature-flags-api-.*\", container!=\"POD\"} / 1024 / 1024",
-              "legendFormat": "{{pod}}",
+              "legendFormat": "{{ "{{" }}pod{{ "}}" }}",
               "range": true,
               "refId": "A"
             }
@@ -617,7 +617,7 @@ data:
               "datasource": "$datasource",
               "editorMode": "code",
               "expr": "sum by (pod) (container_memory_usage_bytes{pod=~\"feature-flags-api-.*\", container!=\"POD\"} / 1024 / 1024)",
-              "legendFormat": "{{pod}}",
+              "legendFormat": "{{ "{{" }}pod{{ "}}" }}",
               "range": true,
               "refId": "A"
             }
