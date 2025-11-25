@@ -19,6 +19,27 @@ spec:
           command: ["sh", "-c"]
           args:
             - |
+              # --- STEP 1: ELASTICSEARCH INDEX TEMPLATE ---
+              echo "1. Waiting for Elasticsearch..."
+              # Using -k because internal ES certificates are self-signed
+              until curl -s -k -u elastic:${ELASTIC_PASSWORD} https://elasticsearch-es-http:9200/_cat/health; do
+                echo "Waiting for ES..."
+                sleep 5
+              done
+
+              echo "Pushing Index Template..."
+              # Upload the index_template.json file from the ConfigMap
+              curl -X PUT "https://elasticsearch-es-http:9200/_index_template/feature-flags-api" \
+                   -u elastic:${ELASTIC_PASSWORD} \
+                   -k \
+                   -H "Content-Type: application/json" \
+                   -d @/dashboards/index_template.json
+              
+              echo ""
+              echo "Index Template Applied."
+              echo "-----------------------------------"
+
+              # --- STEP 2: KIBANA DASHBOARDS ---
               echo "Waiting for Kibana to be ready..."
               until curl -s -o /dev/null -w "%{http_code}" http://kibana-kb-http:5601/api/status | grep -q "200"; do
                 echo "Still waiting..."
@@ -34,6 +55,8 @@ spec:
                   --form file=@$f \
                   http://kibana-kb-http:5601/api/saved_objects/_import?overwrite=true
               done
+              echo ""
+              echo "Dashboard Import Complete."
 
           env:
             - name: ELASTIC_PASSWORD
