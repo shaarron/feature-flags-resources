@@ -11,7 +11,7 @@ spec:
       volumes:
         - name: dashboards
           configMap:
-            name: kibana-dashboard
+            name: kibana-dashboard-json
 
       containers:
         - name: importer
