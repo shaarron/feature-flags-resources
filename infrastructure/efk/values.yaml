@@ -99,7 +99,7 @@ fluent-bit:
 
       [FILTER]
           Name parser
-          Match kube.ingress.*
+          Match *ingress-nginx*
           Key_Name log
           Parser nginx
           Reserve_Data On
