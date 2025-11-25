@@ -160,7 +160,8 @@ fluent-bit:
           Time_Format %d/%b/%Y:%H:%M:%S %z
 
       [PARSER]
-          Name json
+          Name json_strict
           Format json
           Time_Key asctime
           Time_Format %Y-%m-%d %H:%M:%S,%L
+          Types latency_ms:integer status:integer
