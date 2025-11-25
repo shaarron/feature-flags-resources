@@ -8,8 +8,10 @@ elasticsearch:
   version: "9.1.5"
   selfSignedDisabled: true
   nodeSetName: "default"
+  #change to ha later
   nodeCount: 1
   allowMmap: false
+
   resources:
     requests:
       cpu: 300m
@@ -17,6 +19,7 @@ elasticsearch:
     limits:
       cpu: "1"
       memory: 2Gi
+
   storage:
     accessModes: ["ReadWriteOnce"]
     size: 10Gi
@@ -61,8 +64,7 @@ fluent-bit:
           Flush 5
           Log_Level info
           Parsers_File /fluent-bit/etc/parsers.conf
-          # FIX 1: Corrected path (removed /conf/)
-          Parsers_File /fluent-bit/etc/custom_parsers.conf
+          Parsers_File /fluent-bit/etc/conf/custom_parsers.conf
           HTTP_Server On
           HTTP_Listen 0.0.0.0
           HTTP_Port 2020
@@ -75,7 +77,7 @@ fluent-bit:
           Path /var/log/containers/*.log
           multiline.parser docker, cri
           Tag kube.*
-          Mem_Buf_Limit 15MB
+          Mem_Buf_Limit 10MB
           Skip_Long_Lines On
           Refresh_Interval 10
 
@@ -89,36 +91,16 @@ fluent-bit:
       [FILTER]
           Name kubernetes
           Match kube.*
-          # FIX 2: Set to Off because we don't have the Lua script.
-          # If you set this On, Elastic will crash with mapping errors.
-          Labels Off
-          Annotations Off
-          # Set Merge_Log Off so we can run our custom json_strict parser manually
-          Merge_Log Off
-          Keep_Log Off
+          Merge_Log On
+          Keep_Log On
+          K8S-Logging.Parser On
 
       [FILTER]
           Name parser
-          Match kube.ingress-nginx.*
+          Match kube.ingress.*
           Key_Name log
           Parser nginx
           Reserve_Data On
-
-      [FILTER]
-          Name parser
-          Match kube.*
-          Key_Name log
-          # This matches the [PARSER] name at the bottom
-          Parser json_strict
-          Reserve_Data On
-
-      [FILTER]
-          Name grep
-          Match kube.*
-          Exclude kubernetes.container_name fluent-bit
-          
-      # FIX 3: Removed the duplicate [FILTER] block that looked for "Parser json"
-      # because "Parser json" no longer exists (it is now json_strict).
 
     outputs: |
       [OUTPUT]
@@ -130,10 +112,9 @@ fluent-bit:
           HTTP_Passwd ${ES_PASSWORD}
           tls Off
           Logstash_Format On
-          Logstash_Prefix logs
-          Retry_Limit 20
+          Logstash_Prefix logstash
+          Retry_Limit False
           Suppress_Type_Name On
-          Compress gzip
 
       [OUTPUT]
           Name es
@@ -145,21 +126,19 @@ fluent-bit:
           tls Off
           Logstash_Format On
           Logstash_Prefix node
-          Retry_Limit 20
+          Retry_Limit False
           Suppress_Type_Name On
-          Compress gzip
 
     customParsers: |
       [PARSER]
           Name nginx
           Format regex
-          Regex ^(?<remote>[^ ]*) - (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^\"]*?)(?: +\S*)?)?" (?<code>[^ ]*) (?<size>[^ ]*) "(?<referer>[^\"]*)" "(?<agent>[^\"]*)" (?<request_length>[^ ]*) (?<request_time>[^ ]*) \[(?<proxy_upstream_name>[^ ]*)\] (?<upstream_addr>[^ ]*) (?<upstream_response_length>[^ ]*) (?<upstream_response_time>[^ ]*) (?<upstream_status>[^ ]*) (?<host>[^ ]*) (?<server_protocol>[^ ]*)
+          Regex ^(?<remote>[^ ]*) - (?<user>[^ ]*) \\[(?<time>[^\\]]*)\\] "(?<method>\\S+)(?: +(?<path>[^\\"]*?)(?: +\\S*)?)?" (?<code>[^ ]*) (?<size>[^ ]*) "(?<referer>[^\\"]*)" "(?<agent>[^\\"]*)" (?<request_length>[^ ]*) (?<request_time>[^ ]*) \\[(?<proxy_upstream_name>[^ ]*)\\] (?<upstream_addr>[^ ]*) (?<upstream_response_length>[^ ]*) (?<upstream_response_time>[^ ]*) (?<upstream_status>[^ ]*) (?<host>[^ ]*) (?<server_protocol>[^ ]*)
           Time_Key time
           Time_Format %d/%b/%Y:%H:%M:%S %z
 
       [PARSER]
-          Name json_strict
+          Name json_parser
           Format json
-          Time_Key asctime
-          Time_Format %Y-%m-%d %H:%M:%S,%L
-          Types latency_ms:integer status:integer
+          Time_Key time
+          Time_Format %Y-%m-%dT%H:%M:%S.%NZ
