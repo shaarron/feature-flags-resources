@@ -1,5 +1,6 @@
 global:
   host: ""
+tlsSecretName: ""
 
 kube-prometheus-stack:
   namespaceOverride: kps
@@ -12,10 +13,13 @@ kube-prometheus-stack:
       podMonitorSelector: {}
 
   grafana:
+    externalSecrets:
+      enabled: false
     admin:
-      existingSecret: grafna-credentials
-      existingSecretUserKey: USER
-      existingSecretPasswordKey: PASSWORD
+      existingSecret: grafana-secret
+      existingSecretUserKey: admin-user
+      existingSecretPasswordKey: admin-password
+
     namespaceOverride: kps
     persistence:
       enabled: true

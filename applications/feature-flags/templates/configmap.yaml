@@ -4,6 +4,5 @@ metadata:
   name: {{ .Values.mongo.configMapName }}
 data:
   MONGO_HOST: {{ .Values.mongo.host | quote }}
-  MONGO_INITDB_DATABASE: {{ .Values.mongo.database | quote }}
   MONGO_INITDB_ROOT_USERNAME: {{ .Values.mongo.rootUsername | quote }}
   MONGO_REPLICA_SET: {{ .Values.mongo.replicaSet | quote }}

@@ -14,7 +14,7 @@ spec:
   tls:
     - hosts:
         - grafana.{{ .Values.global.host }}
-      secretName: wildcard-its-sharon-com-tls
+      secretName: {{ .Values.tlsSecretName }}
   rules:
     - host: grafana.{{ .Values.global.host }}
       http:

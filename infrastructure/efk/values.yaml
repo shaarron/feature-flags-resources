@@ -1,7 +1,6 @@
 global:
   host: ""
 tlsSecretName: ""
-
 namespace: efk
 
 elasticsearch:

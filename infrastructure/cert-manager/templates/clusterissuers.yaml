@@ -5,12 +5,12 @@ metadata:
   namespace: cert-manager
 spec:
   acme:
-    email: sharon.kroch@gmail.com
+    email: {{ .Values.cert-manager.email }}
     server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: letsencrypt-account-key
     solvers:
       - dns01:
           route53:
-            region: ap-south-1
-            hostedZoneID: Z10244981ZAMIY8KVE0M3
+            region: {{ .Values.cert-manager.route53.region }}
+            hostedZoneID: {{ .Values.cert-manager.route53.hostedZoneID }}

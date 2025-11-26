@@ -1,15 +1,15 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: wildcard-its-sharon-com
+  name: wildcard-cert
   namespace: cert-manager
 spec:
-  secretName: wildcard-its-sharon-com-tls
+  secretName: {{ .Values.cert-manager.wildcardCert.secretName }}
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer
-  commonName: "*.its-sharon.com"
+  commonName: "*.{{ .Values.cert-manager.domain }}"
   dnsNames:
-    - "*.its-sharon.com"
-    - "its-sharon.com"
-    - "*.dev.its-sharon.com"
+    - "*.{{ .Values.cert-manager.domain }}"
+    - "{{ .Values.cert-manager.domain }}"
+    - "*.dev.{{ .Values.cert-manager.domain }}"
