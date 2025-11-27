@@ -6,7 +6,7 @@ cert-manager:
     name: cert-manager
     create: false
   
-cert-manager-config:
+certManagerConfig:
   domain: ""
   wildcardCert:
     secretName: ""
