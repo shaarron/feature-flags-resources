@@ -12,6 +12,10 @@ spec:
     repoURL: https://github.com/shaarron/feature-flags-resources.git
     path: infrastructure/cert-manager
     targetRevision: app-of-apps-fixes
+    helm:
+      releaseName: cert-manager
+      valueFiles:
+      - ../../argocd/applications/values.yaml
 
   destination:
     server: https://kubernetes.default.svc
