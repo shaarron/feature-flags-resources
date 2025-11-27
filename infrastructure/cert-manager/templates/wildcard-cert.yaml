@@ -4,7 +4,7 @@ metadata:
   name: wildcard-cert
   namespace: cert-manager
 spec:
-  secretName: {{ .Values.cert-manager.wildcardCert.secretName }}
+  secretName: {{ .Values.certManagerConfig.wildcardCert.secretName }}
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer
