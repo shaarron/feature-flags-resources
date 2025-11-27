@@ -11,7 +11,7 @@ clusterSecretStore:
 ingress: 
   tlsSecretName: "wildcard-itssharon"
 
-cert-manager:
+cert-manager-config:
   domain: "its-sharon.com"
   email: "sharonkovich@gmail.com"
   route53:

@@ -1,4 +1,3 @@
-# Enable cert-manager subchart
 cert-manager:
   enabled: true
   crds:
@@ -7,6 +6,8 @@ cert-manager:
     name: cert-manager
     create: false
   
+cert-manager-config:
+  domain: ""
   wildcardCert:
     secretName: ""
   email: ""
