@@ -6,6 +6,7 @@ hostedZoneID: "Z10244981ZAMIY8KVE0M3"
 clusterSecretStore:
   provider:
     aws:
+      
       region: "ap-south-1"
 
 ingress: 
