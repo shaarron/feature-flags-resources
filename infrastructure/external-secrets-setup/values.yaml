@@ -9,6 +9,7 @@ external-secrets:
 serviceAccount:
   name: external-secrets-sa
   namespace: external-secrets
+  iamRoleArn: ""
   syncWave: "0"
 
 clusterSecretStore:
