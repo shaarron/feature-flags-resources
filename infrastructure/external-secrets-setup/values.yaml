@@ -6,16 +6,16 @@ external-secrets:
     create: false
     name: external-secrets-sa
 
-serviceAccount:
-  name: external-secrets-sa
-  namespace: external-secrets
-  iamRoleArn: ""
-  syncWave: "0"
+  serviceAccount:
+    name: external-secrets-sa
+    namespace: external-secrets
+    iamRoleArn: ""
+    syncWave: "0"
 
-clusterSecretStore:
-  name: aws-secret-store
-  syncWave: "2"
-  provider:
-    aws:
-      service: SecretsManager
-      region: ""
+  clusterSecretStore:
+    name: aws-secret-store
+    syncWave: "2"
+    provider:
+      aws:
+        service: SecretsManager
+        region: ""
