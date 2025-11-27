@@ -3,23 +3,24 @@ global:
 
 hostedZoneID: "Z10244981ZAMIY8KVE0M3"
 
+
 clusterSecretStore:
   provider:
     aws:
-      
       region: "ap-south-1"
 
 ingress: 
   tlsSecretName: "wildcard-itssharon"
 
 cert-manager:
-  domain: "its-sharon.com"
-  email: "sharonkovich@gmail.com"
-  route53:
-    region: "ap-south-1"
-    hostedZoneID: "Z10244981ZAMIY8KVE0M3"
-  wildcardCert:
-    secretName: "wildcard-itssharon"
+  certManagerConfig:
+    domain: "its-sharon.com"
+    email: "sharonkovich@gmail.com"
+    route53:
+      region: "ap-south-1"
+      hostedZoneID: "Z10244981ZAMIY8KVE0M3"
+    wildcardCert:
+      secretName: "wildcard-itssharon"
 
 mongodb:
   externalSecrets:
