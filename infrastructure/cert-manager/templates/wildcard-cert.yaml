@@ -13,3 +13,4 @@ spec:
     - "*.{{ .Values.certManagerConfig.domain }}"
     - "{{ .Values.certManagerConfig.domain }}"
     - "*.dev.{{ .Values.certManagerConfig.domain }}"
+
