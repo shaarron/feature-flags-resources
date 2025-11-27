@@ -4,7 +4,8 @@ metadata:
   name: wildcard-cert
   namespace: cert-manager
 spec:
-  secretName: {{ .Values.certManagerConfig.wildcardCert.secretName }}
+  secretName: {{ required "secretName is missing in certManagerConfig" $.Values.certManagerConfig.wildcardCert.secretName | quote }}
+  # secretName: {{ .Values.certManagerConfig.wildcardCert.secretName }}
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer
