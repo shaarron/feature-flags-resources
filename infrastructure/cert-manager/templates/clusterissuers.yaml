@@ -5,12 +5,12 @@ metadata:
   namespace: cert-manager
 spec:
   acme:
-    email: {{ .Values.certManagerConfig.email }}
+    email: {{ .Values.cert-manager.email }}
     server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: letsencrypt-account-key
     solvers:
       - dns01:
           route53:
-            region: {{ .Values.certManagerConfig.route53.region }}
-            hostedZoneID: {{ .Values.certManagerConfig.route53.hostedZoneID }}
+            region: {{ .Values.cert-manager.route53.region }}
+            hostedZoneID: {{ .Values.cert-manager.route53.hostedZoneID }}

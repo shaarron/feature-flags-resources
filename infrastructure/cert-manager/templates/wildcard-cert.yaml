@@ -4,14 +4,13 @@ metadata:
   name: wildcard-cert
   namespace: cert-manager
 spec:
-  secretName: {{ required "secretName is missing in certManagerConfig" $.Values.certManagerConfig.wildcardCert.secretName | quote }}
-  # secretName: {{ .Values.certManagerConfig.wildcardCert.secretName }}
+  secretName: {{ .Values.cert-manager.wildcardCert.secretName }}
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer
-  commonName: "*.{{ .Values.certManagerConfig.domain }}"
+  commonName: "*.{{ .Values.cert-manager.domain }}"
   dnsNames:
-    - "*.{{ .Values.certManagerConfig.domain }}"
-    - "{{ .Values.certManagerConfig.domain }}"
-    - "*.dev.{{ .Values.certManagerConfig.domain }}"
+    - "*.{{ .Values.cert-manager.domain }}"
+    - "{{ .Values.cert-manager.domain }}"
+    - "*.dev.{{ .Values.cert-manager.domain }}"
 
