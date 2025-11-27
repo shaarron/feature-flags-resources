@@ -1,6 +1,9 @@
 global:
   host: ""
-tlsSecretName: ""
+
+ingress:
+  tlsSecretName: ""
+
 namespace: efk
 
 elasticsearch:

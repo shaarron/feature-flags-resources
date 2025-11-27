@@ -15,7 +15,7 @@ spec:
   tls:
     - hosts:
         - kibana.{{ .Values.global.host }}
-      secretName: {{ .Values.tlsSecretName }}
+      secretName: {{ .Values.ingress.tlsSecretName }}
   rules:
     - host: kibana.{{ .Values.global.host }}
       http:

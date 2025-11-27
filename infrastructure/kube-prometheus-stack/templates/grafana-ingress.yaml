@@ -14,7 +14,7 @@ spec:
   tls:
     - hosts:
         - grafana.{{ .Values.global.host }}
-      secretName: {{ .Values.tlsSecretName }}
+      secretName: {{ .Values.ingress.tlsSecretName }}
   rules:
     - host: grafana.{{ .Values.global.host }}
       http:

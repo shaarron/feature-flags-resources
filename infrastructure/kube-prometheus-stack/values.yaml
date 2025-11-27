@@ -1,6 +1,8 @@
 global:
   host: ""
-tlsSecretName: ""
+
+ingress:
+  tlsSecretName: ""
 
 kube-prometheus-stack:
   namespaceOverride: kps

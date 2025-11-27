@@ -8,7 +8,9 @@ clusterSecretStore:
     aws:
       region: "ap-south-1"
 
-tlsSecretName: "wildcard-itssharon"
+ingress: 
+  tlsSecretName: "wildcard-itssharon"
+
 cert-manager:
   domain: "its-sharon.com"
   email: "sharonkovich@gmail.com
