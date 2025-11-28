@@ -68,13 +68,29 @@ graph TD
    - Deploy **EFK**
      - [ECK](https://www.elastic.co/docs/deploy-manage/deploy/cloud-on-k8s) (**Elasic Cloud Kubernetes** - for Elasticsearch & kibana) 
      - Fluent Bit 
-  - Deploy **Ingress NGINX**
-  - Deploy **external-secrets**
-  - Deploy **cert-manager**
+   - Deploy **Ingress NGINX**
+   - Deploy **external-secrets**
+   - Deploy **cert-manager**
 
 3. **Applications**
    - Deploy **Feature-Flags API**
  
+## Global Configuration Strategy
+
+This repository uses a **centralized configuration pattern**. A single values file overrides settings across all applications and infrastructure components (like domains, regions, and secrets) to ensure consistency.
+
+**Source of Truth:** [`argocd/applications/values.yaml`](argocd/applications/values.yaml)
+
+### How it Works
+Argo CD Applications reference the global values file using `valueFiles`.
+
+**Example:**
+```yaml
+source:
+  helm:
+    valueFiles:
+    - ../../argocd/applications/values.yaml  # References the global config
+```
 
 ## Helm Charts
 
