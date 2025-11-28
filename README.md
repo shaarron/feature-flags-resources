@@ -16,6 +16,7 @@ This repository contains the **infrastructure manifests** for deploying [**Featu
   - **[Sync waves](#sync-waves)**
   - **[Argocd Applications Structure](#argocd-applications-structure)**
   - **[Grafana Dashboards](#grafana-dashboard-feature-flags-api-monitoring)**
+  - **[Kibana Dashboards](#kibana-dashboard-feature-flags-dashboard)**
   - **[Deploy Locally](#deploy-locally)**
 
 ## Argocd Deployment Flow
@@ -23,14 +24,17 @@ This repository contains the **infrastructure manifests** for deploying [**Featu
 ```mermaid
 graph TD
   A[**Root Application**] --> B[Bootstrap Layer]
-  B --> B1[Namespaces]
   B --> B2[ECK Operator]
   B --> B3[MongoDB Operator]
 
   A --> C[Infrastructure Layer]
-  C --> C1[Kube-Prometheus-Stack]
+  C --> C1[Kube Prometheus Stack]
   C --> C2[EFK Stack]
   C --> C3[MongoDB]
+  C --> C4[Cert Manager]
+  C --> C5[Ingress NGINX]
+  C --> C6[External Secrets Setup]
+
   A --> D[Application Layer]
   D --> D1[Feature-Flags App]
 ```
@@ -42,10 +46,10 @@ graph TD
 |-------------------------|------------------|-----------|-------|
 | MongoDB Operator       | `mongodb`        | `1`       | Installs MongoDB Community Operator |
 | ECK Operator           | `elastic-system` | `1`       | Deploys ECK operator(Elasticsearch & Kibana) |
-| Cert Manager           | `cert-manager` | `1`       |  |
+| Cert Manager           | `cert-manager` | `1`       | Installs Cert-Manager controller and ClusterIssuers for TLS management |
 | Ingress NGINX           | `ingress-nginx` | `1`       | Deploys Ingress NGINX controller |
-| External Secrets Setup         |  | `2`       |  |
-| MongoDB          | `default` | `2`       |  |
+| External Secrets Setup         |  `external-secrets`| `2`       | Installs External Secrets Operator and the AWS `ClusterSecretStore` configuration |
+| MongoDB          | `default` | `2`       | Deploys the actual MongoDB ReplicaSet instance (Custom Resource) |
 | Kube Prometheus Stack  | `kps`            | `2`       | Metrics stack (Prometheus, Grafana, etc.) |
 | EFK Stack              | `efk`            | `2`       | Fluent Bit → Elasticsearch → Kibana |
 | Feature Flags API      | `default`        | `3`       | Python Flask-based API for toggling flags |
@@ -76,39 +80,46 @@ graph TD
 
 This repository includes several Helm charts located in the [infrastructure/](infrastructure/) directory, each managing a specific component of the observability and database stack:
 
-### [cert-manager](infrastructure/cert-manager/)
+### [Cert-manager](infrastructure/cert-manager/)
 Manages TLS certificates for Kubernetes applications. Automatically provisions and renews certificates from Let's Encrypt and other certificate authorities. Essential for securing ingress traffic and enabling HTTPS.
 
-### [efk](infrastructure/efk/)
+### [EFK](infrastructure/efk/)
 Complete logging stack combining Elasticsearch, Fluent Bit, and Kibana. Fluent Bit collects logs from all pods, forwards them to Elasticsearch for indexing, and Kibana provides a web UI for log analysis and visualization.
 
-### [external-secrets-setup](infrastructure/external-secrets-setup/)
+### [External-secrets-setup](infrastructure/external-secrets-setup/)
 Deploys the External Secrets Operator along with required ServiceAccount and ClusterSecretStore resources. Enables secure integration with external secret management systems like AWS Secrets Manager.
 
-### [kube-prometheus-stack](infrastructure/kube-prometheus-stack/)
+### [Kube-prometheus-stack](infrastructure/kube-prometheus-stack/)
 Comprehensive monitoring solution including Prometheus for metrics collection, Grafana for visualization, and Alertmanager for alerting. Pre-configured with custom dashboards for the Feature Flags API.
 
-### [mongodb](infrastructure/mongodb/)
+### [Mongodb](infrastructure/mongodb/)
 Deploys MongoDB Community Edition custom resources managed by the MongoDB Kubernetes Operator. Provides the persistent data store for the Feature Flags application.
 
 ## Grafana Dashboard: Feature Flags API Monitoring
-This Grafana dashboard monitors the Feature Flags API on Kubernetes.
-Provisioned via the kube-prometheus-stack Helm chart (ConfigMap: ```feature-flags-grafana-dashboards```), it combines Flask app metrics (```prometheus_flask_exporter```) with Kubernetes metrics from Prometheus to visualize traffic, performance, and resource usage.
 
+This Grafana dashboard monitors the Feature Flags API on Kubernetes. 
+Provisioned via the `kube-prometheus-stack` Helm chart (ConfigMap: `feature-flags-api-grafana-dashboard`), it combines Flask app metrics (`prometheus_flask_exporter`) with Kubernetes metrics from Prometheus to visualize traffic, performance, and resource usage.
 
-| **Panel**              | **Metric**                                                                                     | **Description**                                                                                     |
-|-------------------------|-----------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
-| **HTTP Request Rate**   | `rate(flask_http_request_total[5m])`                                                          | Displays the rate of incoming HTTP requests handled by the Flask API over the last 5 minutes. Useful for understanding load and usage patterns. |
-| **HTTP Error Rate (5xx)** | `rate(flask_http_request_total{status=~"5.."}[5m])`                                          | Shows the rate of server-side errors (5xx) to detect application or backend failures.               |
-| **Response Time (p95)** | `histogram_quantile(0.95, rate(flask_http_request_duration_seconds_bucket[5m]))`              | Indicates the 95th percentile response time of API requests, representing typical user latency under load. |
-| **Pod CPU Usage**       | `rate(container_cpu_usage_seconds_total{pod=~"flask-app.*"}[5m])`                             | Monitors CPU utilization of the Flask application pods to identify performance or scaling issues.   |
-| **Pod Memory Usage**    | `container_memory_usage_bytes{pod=~"flask-app.*"} / 1024 / 1024`                              | Tracks memory consumption (in MB) of each Flask application pod to detect memory leaks or resource exhaustion. |
+| **Panel** | **Metric Query** | **Description** |
+|:---|:---|:---|
+| **HTTP Request Rate** | `sum by (status, method, handler) (rate(flask_http_request_total[5m]))` | Displays the rate of incoming HTTP requests handled by the Flask API over the last 5 minutes. |
+| **HTTP Error Rate (5xx)** | `sum(rate(flask_http_request_total{status=~"5.."}[5m]))` | Shows the rate of server-side errors (5xx) to detect application or backend failures. |
+| **Response Time (p95)** | `histogram_quantile(0.95, sum(rate(flask_http_request_duration_seconds_bucket[5m])) by (le))` | Indicates the 95th percentile response time of API requests. |
+| **Pod CPU Usage** | `sum by (pod) (rate(container_cpu_usage_seconds_total{pod=~"feature-flags-api-.*", container!="POD"}[5m]))` | Monitors CPU utilization of the application containers (excludes infrastructure containers). |
+| **Per-Container Memory**| `container_memory_usage_bytes{pod=~"feature-flags-api-.*", container!="POD"} / 1024 / 1024` | Tracks memory usage of individual application containers within the pods (useful if sidecars are present). |
+| **Pod Memory Usage** | `sum by (pod) (container_memory_usage_bytes{pod=~"feature-flags-api-.*", container!="POD"} / 1024 / 1024)` | Tracks total memory consumption (in MB) aggregated per pod. |
+
+### Technical Note: The `container!="POD"` Filter
+You will notice the resource queries include the filter `container!="POD"`.
+* **Context:** In Kubernetes, every Pod includes a hidden infrastructure container (often called the "pause" container) that holds the network namespace.
+* **Purpose:** This filter explicitly excludes that infrastructure container from the metrics. This ensures the dashboard visualizes the CPU and Memory usage of your actual **Feature Flags application** without skewing the data with Kubernetes system overhead.
+
 
 <img src="grafana-dashboard-demo.png" alt="grafana-dashboard-demo" width="1200" >
 
-## Kibana Dashbaords
+## Kibana Dashboard: Feature Flags Dashboard
 
-The dashboard, titled "Feature Flags Dashboard", focuses on high-level log volume, service activity, and error rates, particularly targeting feature flags application common log fields like HTTP status codes (status/code) and Python/standard logging levels (levelname).
+The dashboard, titled "Feature Flags Dashboard", focuses on high-level log volume, service activity, and error rates, particularly targeting feature flags application common log fields like HTTP status codes (`status`/`code`) and Python/standard logging levels (`levelname`).
 
 ### Dashboard Panels Overview
 
@@ -123,6 +134,18 @@ The dashboard is structured into several panels for immediate observability into
 | **Time Series** | **Error Volume over Time** | Log count over time. | **Filter:** `levelname: ERROR` **OR** `status >= 400` **OR** `code >= 400`. Split by the **Top 10** error sources. |
 | **Pie Chart** | **Log Volume by Service** | Count of records, aggregated by service. | Top 5 `kubernetes.container_name.keyword` values. |
 | **Pie Chart** | **Error Distribution** | Count of records, aggregated by code. | **Filter:** `code >= 400` **OR** `status >= 400`. Grouped by `code` field ranges. |
+
+### Technical Implementation Details
+
+#### 1. Global Filter: Kubernetes Metadata Required
+The dashboard applies a **Global Filter** requiring the existence of the field `kubernetes.container_name.keyword`.
+* **Implication:** Only logs originating from Kubernetes containers will be visible. Logs shipped from external sources (e.g., VMs, bare metal) without this specific metadata field will be automatically filtered out.
+
+#### 2. Index Template & Data Types
+The dashboard relies on the specific mappings defined in the `index_template.json` to function correctly.
+* **Numeric Fields (`short`/`integer`):** Fields like `status`, `code`, and `latency_ms` are explicitly mapped as numeric types. This allows the dashboard to perform range queries (e.g., `status >= 400`) and aggregations. If these were mapped as default strings, the error rate logic would fail.
+* **Keyword Fields:** Fields like `levelname` and `kubernetes.container_name` use the `keyword` type, which is required for the "Top 10" bucket aggregations used in the visualization splits.
+
 
 <img src="kibana-dashboard-demo.png" alt="kibana-dashboard-demo" width="1200" >
 
