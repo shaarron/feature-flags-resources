@@ -28,11 +28,7 @@ mongodb:
 grafana:
   externalSecrets:
     enabled: true
-      
-# kube-prometheus-stack:
-# for local testing - disable node exporter
-  # nodeExporter:
-  #   enabled: false
-  # exporter:
-  #   enabled: false
+
+kibana:
+  publicBaseUrl: "https://kibana.its-sharon.com"
 

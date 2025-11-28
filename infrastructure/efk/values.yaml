@@ -10,8 +10,7 @@ elasticsearch:
   version: "9.1.5"
   selfSignedDisabled: true
   nodeSetName: "default"
-  #change to ha later
-  nodeCount: 1
+  nodeCount: 2
   allowMmap: false
 
   resources:
@@ -36,7 +35,7 @@ kibana:
       memory: "1Gi"
     limits:
       memory: "2Gi"
-  publicBaseUrl: "https://kibana.its-sharon.com"
+  publicBaseUrl: ""
 
 fluent-bit:
   image:

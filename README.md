@@ -40,10 +40,13 @@ graph TD
 
 | Component               | Namespace        | Sync Wave | Notes |
 |-------------------------|------------------|-----------|-------|
-| Namespaces             | `argocd`         | `0`       | Ensures required namespaces exist |
-| MongoDB Operator       | `mongodb`        | `0`       | Installs MongoDB Community Operator |
-| ECK Operator           | `elastic-system` | `0`       | Deploys ECK operator(Elasticsearch & Kibana) |
-| Kube Prometheus Stack  | `kps`            | `1`       | Metrics stack (Prometheus, Grafana, etc.) |
+| MongoDB Operator       | `mongodb`        | `1`       | Installs MongoDB Community Operator |
+| ECK Operator           | `elastic-system` | `1`       | Deploys ECK operator(Elasticsearch & Kibana) |
+| Cert Manager           | `cert-manager` | `1`       |  |
+| Ingress NGINX           | `ingress-nginx` | `1`       | Deploys Ingress NGINX controller |
+| External Secrets Setup         |  | `2`       |  |
+| MongoDB          | `default` | `2`       |  |
+| Kube Prometheus Stack  | `kps`            | `2`       | Metrics stack (Prometheus, Grafana, etc.) |
 | EFK Stack              | `efk`            | `2`       | Fluent Bit → Elasticsearch → Kibana |
 | Feature Flags API      | `default`        | `3`       | Python Flask-based API for toggling flags |
 
@@ -52,21 +55,42 @@ graph TD
 ## Argocd Applications Structure
  
 1. **Bootstrap**
-   - Create namespaces
    - Install ECK operator + crds
    - Install MongoDB operator + crds
  
-
 2. **Infrastructure**
    - Deploy **kube-prometheus-stack**
    - Deploy **MongoDB**
    - Deploy **EFK**
      - [ECK](https://www.elastic.co/docs/deploy-manage/deploy/cloud-on-k8s) (**Elasic Cloud Kubernetes** - for Elasticsearch & kibana) 
      - Fluent Bit 
+  - Deploy **Ingress NGINX**
+  - Deploy **external-secrets**
+  - Deploy **cert-manager**
 
 3. **Applications**
    - Deploy **Feature-Flags API**
  
+
+## Helm Charts
+
+This repository includes several Helm charts located in the [infrastructure/](infrastructure/) directory, each managing a specific component of the observability and database stack:
+
+### [cert-manager](infrastructure/cert-manager/)
+Manages TLS certificates for Kubernetes applications. Automatically provisions and renews certificates from Let's Encrypt and other certificate authorities. Essential for securing ingress traffic and enabling HTTPS.
+
+### [efk](infrastructure/efk/)
+Complete logging stack combining Elasticsearch, Fluent Bit, and Kibana. Fluent Bit collects logs from all pods, forwards them to Elasticsearch for indexing, and Kibana provides a web UI for log analysis and visualization.
+
+### [external-secrets-setup](infrastructure/external-secrets-setup/)
+Deploys the External Secrets Operator along with required ServiceAccount and ClusterSecretStore resources. Enables secure integration with external secret management systems like AWS Secrets Manager.
+
+### [kube-prometheus-stack](infrastructure/kube-prometheus-stack/)
+Comprehensive monitoring solution including Prometheus for metrics collection, Grafana for visualization, and Alertmanager for alerting. Pre-configured with custom dashboards for the Feature Flags API.
+
+### [mongodb](infrastructure/mongodb/)
+Deploys MongoDB Community Edition custom resources managed by the MongoDB Kubernetes Operator. Provides the persistent data store for the Feature Flags application.
+
 ## Grafana Dashboard: Feature Flags API Monitoring
 This Grafana dashboard monitors the Feature Flags API on Kubernetes.
 Provisioned via the kube-prometheus-stack Helm chart (ConfigMap: ```feature-flags-grafana-dashboards```), it combines Flask app metrics (```prometheus_flask_exporter```) with Kubernetes metrics from Prometheus to visualize traffic, performance, and resource usage.
@@ -80,6 +104,27 @@ Provisioned via the kube-prometheus-stack Helm chart (ConfigMap: ```feature-flag
 | **Pod CPU Usage**       | `rate(container_cpu_usage_seconds_total{pod=~"flask-app.*"}[5m])`                             | Monitors CPU utilization of the Flask application pods to identify performance or scaling issues.   |
 | **Pod Memory Usage**    | `container_memory_usage_bytes{pod=~"flask-app.*"} / 1024 / 1024`                              | Tracks memory consumption (in MB) of each Flask application pod to detect memory leaks or resource exhaustion. |
 
+<img src="grafana-dashboard-demo.png" alt="grafana-dashboard-demo" width="1200" >
+
+## Kibana Dashbaords
+
+The dashboard, titled "Feature Flags Dashboard", focuses on high-level log volume, service activity, and error rates, particularly targeting feature flags application common log fields like HTTP status codes (status/code) and Python/standard logging levels (levelname).
+
+### Dashboard Panels Overview
+
+The dashboard is structured into several panels for immediate observability into log health and volume.
+
+| Panel Type | Title | Data Source / Metric | Filtering Logic |
+| :--- | :--- | :--- | :--- |
+| **Metric** | **Total Log Volume** | Count of all log records. | None (All logs). |
+| **Metric** | **Active Services** | Unique count of `kubernetes.container_name.keyword`. | Filtered to records where `kubernetes.container_name.keyword` exists. |
+| **Metric** | **Total Errors** | Count of records. | **Filter:** `levelname: ERROR` **OR** `status >= 400` **OR** `code >= 400`. |
+| **Time Series** | **Log Volume by Service** | Log count over time. | Split by the **Top 10** `kubernetes.container_name.keyword` values. |
+| **Time Series** | **Error Volume over Time** | Log count over time. | **Filter:** `levelname: ERROR` **OR** `status >= 400` **OR** `code >= 400`. Split by the **Top 10** error sources. |
+| **Pie Chart** | **Log Volume by Service** | Count of records, aggregated by service. | Top 5 `kubernetes.container_name.keyword` values. |
+| **Pie Chart** | **Error Distribution** | Count of records, aggregated by code. | **Filter:** `code >= 400` **OR** `status >= 400`. Grouped by `code` field ranges. |
+
+<img src="kibana-dashboard-demo.png" alt="kibana-dashboard-demo" width="1200" >
 
 ## Deploy Locally
 

@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/shaarron/feature-flags-resources.git
-    targetRevision: app-of-apps-fixes
+    targetRevision: main
     path: applications/feature-flags
     helm:
       releaseName: feature-flags
