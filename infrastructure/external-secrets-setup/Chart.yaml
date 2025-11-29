@@ -1,11 +1,6 @@
 apiVersion: v2
 name: external-secrets-setup
-description: Helm chart for External Secrets Operator setup including ServiceAccount and ClusterSecretStore
+description: Helm chart for setting up the ClusterSecretStore for External Secrets
 type: application
 version: 1.0.0
 appVersion: "1.0"
-dependencies:
-- condition: external-secrets.enabled
-  name: external-secrets
-  repository: https://charts.external-secrets.io
-  version: 0.9.9
