@@ -26,6 +26,7 @@ graph TD
   A[**Root Application**] --> B[Bootstrap Layer]
   B --> B2[ECK Operator]
   B --> B3[MongoDB Operator]
+  B --> B4[External Secrets Operator]
 
   A --> C[Infrastructure Layer]
   C --> C1[Kube Prometheus Stack]
@@ -46,9 +47,10 @@ graph TD
 |-------------------------|------------------|-----------|-------|
 | MongoDB Operator       | `mongodb`        | `1`       | Installs MongoDB Community Operator |
 | ECK Operator           | `elastic-system` | `1`       | Deploys ECK operator(Elasticsearch & Kibana) |
+| External Secrets Operator | `external-secrets` | `1` | Installs External Secrets Operator |
 | Cert Manager           | `cert-manager` | `1`       | Installs Cert-Manager controller and ClusterIssuers for TLS management |
 | Ingress NGINX           | `ingress-nginx` | `1`       | Deploys Ingress NGINX controller |
-| External Secrets Setup         |  `external-secrets`| `2`       | Installs External Secrets Operator and the AWS `ClusterSecretStore` configuration |
+| External Secrets Setup         |  `external-secrets`| `2`       | Configures the AWS `ClusterSecretStore` configuration |
 | MongoDB          | `default` | `2`       | Deploys the actual MongoDB ReplicaSet instance (Custom Resource) |
 | Kube Prometheus Stack  | `kps`            | `2`       | Metrics stack (Prometheus, Grafana, etc.) |
 | EFK Stack              | `efk`            | `2`       | Fluent Bit → Elasticsearch → Kibana |
@@ -57,19 +59,20 @@ graph TD
 ---
 
 ## Argocd Applications Structure
- 
+
 1. **Bootstrap**
    - Install ECK operator + crds
    - Install MongoDB operator + crds
- 
+   - Install External Secrets operator + crds
+
 2. **Infrastructure**
    - Deploy **kube-prometheus-stack**
    - Deploy **MongoDB**
    - Deploy **EFK**
-     - [ECK](https://www.elastic.co/docs/deploy-manage/deploy/cloud-on-k8s) (**Elasic Cloud Kubernetes** - for Elasticsearch & kibana) 
-     - Fluent Bit 
+     - [ECK](https://www.elastic.co/docs/deploy-manage/deploy/cloud-on-k8s) (**Elasic Cloud Kubernetes** - for Elasticsearch & kibana)
+     - Fluent Bit
    - Deploy **Ingress NGINX**
-   - Deploy **external-secrets**
+   - Deploy **external-secrets-setup** (ClusterSecretStore configuration)
    - Deploy **cert-manager**
 
 3. **Applications**
@@ -103,7 +106,7 @@ Manages TLS certificates for Kubernetes applications. Automatically provisions a
 Complete logging stack combining Elasticsearch, Fluent Bit, and Kibana. Fluent Bit collects logs from all pods, forwards them to Elasticsearch for indexing, and Kibana provides a web UI for log analysis and visualization.
 
 ### [External-secrets-setup](infrastructure/external-secrets-setup/)
-Deploys the External Secrets Operator along with required ServiceAccount and ClusterSecretStore resources. Enables secure integration with external secret management systems like AWS Secrets Manager.
+Configures the ClusterSecretStore and required ServiceAccount resources for External Secrets integration. Enables secure integration with external secret management systems like AWS Secrets Manager. The External Secrets Operator is deployed separately in the bootstrap layer.
 
 ### [Kube-prometheus-stack](infrastructure/kube-prometheus-stack/)
 Comprehensive monitoring solution including Prometheus for metrics collection, Grafana for visualization, and Alertmanager for alerting. Pre-configured with custom dashboards for the Feature Flags API.
