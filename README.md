@@ -116,6 +116,9 @@ Deploys MongoDB Community Edition custom resources managed by the MongoDB Kubern
 This Grafana dashboard monitors the Feature Flags API on Kubernetes. 
 Provisioned via the `kube-prometheus-stack` Helm chart (ConfigMap: `feature-flags-api-grafana-dashboard`), it combines Flask app metrics (`prometheus_flask_exporter`) with Kubernetes metrics from Prometheus to visualize traffic, performance, and resource usage.
 
+<img src="grafana-dashboard-demo.png" alt="grafana-dashboard-demo" width="1200" >
+
+
 | **Panel** | **Metric Query** | **Description** |
 |:---|:---|:---|
 | **HTTP Request Rate** | `sum by (status, method, handler) (rate(flask_http_request_total[5m]))` | Displays the rate of incoming HTTP requests handled by the Flask API over the last 5 minutes. |
@@ -125,17 +128,12 @@ Provisioned via the `kube-prometheus-stack` Helm chart (ConfigMap: `feature-flag
 | **Per-Container Memory**| `container_memory_usage_bytes{pod=~"feature-flags-api-.*", container!="POD"} / 1024 / 1024` | Tracks memory usage of individual application containers within the pods (useful if sidecars are present). |
 | **Pod Memory Usage** | `sum by (pod) (container_memory_usage_bytes{pod=~"feature-flags-api-.*", container!="POD"} / 1024 / 1024)` | Tracks total memory consumption (in MB) aggregated per pod. |
 
-### Technical Note: The `container!="POD"` Filter
-You will notice the resource queries include the filter `container!="POD"`.
-* **Context:** In Kubernetes, every Pod includes a hidden infrastructure container (often called the "pause" container) that holds the network namespace.
-* **Purpose:** This filter explicitly excludes that infrastructure container from the metrics. This ensures the dashboard visualizes the CPU and Memory usage of your actual **Feature Flags application** without skewing the data with Kubernetes system overhead.
-
-
-<img src="grafana-dashboard-demo.png" alt="grafana-dashboard-demo" width="1200" >
 
 ## Kibana Dashboard: Feature Flags Dashboard
 
 The dashboard, titled "Feature Flags Dashboard", focuses on high-level log volume, service activity, and error rates, particularly targeting feature flags application common log fields like HTTP status codes (`status`/`code`) and Python/standard logging levels (`levelname`).
+
+<img src="kibana-dashboard-demo.png" alt="kibana-dashboard-demo" width="1200" >
 
 ### Dashboard Panels Overview
 
@@ -163,7 +161,7 @@ The dashboard relies on the specific mappings defined in the `index_template.jso
 * **Keyword Fields:** Fields like `levelname` and `kubernetes.container_name` use the `keyword` type, which is required for the "Top 10" bucket aggregations used in the visualization splits.
 
 
-<img src="kibana-dashboard-demo.png" alt="kibana-dashboard-demo" width="1200" >
+
 
 ## Deploy Locally
 
