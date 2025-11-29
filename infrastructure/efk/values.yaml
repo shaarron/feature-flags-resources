@@ -1,5 +1,8 @@
+global:
+  host: ""
 
-host: ""  
+ingress:
+  tlsSecretName: ""
 
 namespace: efk
 
@@ -7,12 +10,12 @@ elasticsearch:
   version: "9.1.5"
   selfSignedDisabled: true
   nodeSetName: "default"
-  nodeCount: 1
+  nodeCount: 2
   allowMmap: false
 
   resources:
     requests:
-      cpu: 400m
+      cpu: 300m
       memory: 2Gi
     limits:
       cpu: "1"
@@ -28,15 +31,16 @@ kibana:
   elasticsearchRef: "elasticsearch"
   resources:
     requests:
-      cpu: "500m"
+      cpu: "400m"
       memory: "1Gi"
     limits:
       memory: "2Gi"
+  publicBaseUrl: ""
 
 fluent-bit:
   image:
     repository: fluent/fluent-bit
-    tag: latest
+    tag: 4.2.0
   resources:
     requests:
       cpu: "100m"
@@ -58,8 +62,8 @@ fluent-bit:
     service: |
       [SERVICE]
           Daemon Off
-          Flush 1
-          Log_Level debug
+          Flush 5
+          Log_Level info
           Parsers_File /fluent-bit/etc/parsers.conf
           Parsers_File /fluent-bit/etc/conf/custom_parsers.conf
           HTTP_Server On
@@ -74,7 +78,7 @@ fluent-bit:
           Path /var/log/containers/*.log
           multiline.parser docker, cri
           Tag kube.*
-          Mem_Buf_Limit 1MB
+          Mem_Buf_Limit 10MB
           Skip_Long_Lines On
           Refresh_Interval 10
 
@@ -90,11 +94,13 @@ fluent-bit:
           Match kube.*
           Merge_Log On
           Keep_Log On
+          Labels Off
+          Annotations Off
           K8S-Logging.Parser On
 
       [FILTER]
           Name parser
-          Match kube.ingress.*
+          Match *ingress-nginx*
           Key_Name log
           Parser nginx
           Reserve_Data On
@@ -120,7 +126,6 @@ fluent-bit:
           Port 9200
           HTTP_User ${ES_USER}
           HTTP_Passwd ${ES_PASSWORD}
-          tls Off
           Logstash_Format On
           Logstash_Prefix node
           Retry_Limit False
@@ -133,6 +138,7 @@ fluent-bit:
           Regex ^(?<remote>[^ ]*) - (?<user>[^ ]*) \\[(?<time>[^\\]]*)\\] "(?<method>\\S+)(?: +(?<path>[^\\"]*?)(?: +\\S*)?)?" (?<code>[^ ]*) (?<size>[^ ]*) "(?<referer>[^\\"]*)" "(?<agent>[^\\"]*)" (?<request_length>[^ ]*) (?<request_time>[^ ]*) \\[(?<proxy_upstream_name>[^ ]*)\\] (?<upstream_addr>[^ ]*) (?<upstream_response_length>[^ ]*) (?<upstream_response_time>[^ ]*) (?<upstream_status>[^ ]*) (?<host>[^ ]*) (?<server_protocol>[^ ]*)
           Time_Key time
           Time_Format %d/%b/%Y:%H:%M:%S %z
+          Types code:integer size:integer
 
       [PARSER]
           Name json_parser

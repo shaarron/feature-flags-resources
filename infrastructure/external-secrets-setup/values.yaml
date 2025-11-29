@@ -1,0 +1,21 @@
+external-secrets:
+  enabled: true
+  installCRDs: true
+  fullnameOverride: external-secrets
+  serviceAccount:
+    create: false
+    name: external-secrets-sa
+
+serviceAccount:
+  name: external-secrets-sa
+  namespace: external-secrets
+  iamRoleArn: ""
+  syncWave: "0"
+
+clusterSecretStore:
+  name: aws-secret-store
+  syncWave: "2"
+  provider:
+    aws:
+      service: SecretsManager
+      region: ""

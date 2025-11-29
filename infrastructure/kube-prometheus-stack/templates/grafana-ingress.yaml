@@ -3,8 +3,18 @@ kind: Ingress
 metadata:
   name: grafana-ingress
   namespace: kps
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: "letsencrypt-production"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - grafana.{{ .Values.global.host }}
+      secretName: {{ .Values.ingress.tlsSecretName }}
   rules:
     - host: grafana.{{ .Values.global.host }}
       http:

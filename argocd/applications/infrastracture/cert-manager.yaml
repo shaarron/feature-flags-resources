@@ -1,28 +1,29 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kube-prometheus-stack
+  name: cert-manager
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
+
   source:
     repoURL: https://github.com/shaarron/feature-flags-resources.git
+    path: infrastructure/cert-manager
     targetRevision: main
-    path: infrastructure/kube-prometheus-stack
     helm:
-      releaseName: kube-prometheus-stack
+      releaseName: cert-manager
       valueFiles:
       - ../../argocd/applications/values.yaml
+
   destination:
     server: https://kubernetes.default.svc
-    namespace: kps
+    namespace: cert-manager
+
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      - ServerSideApply=true
-      - CRDs=true

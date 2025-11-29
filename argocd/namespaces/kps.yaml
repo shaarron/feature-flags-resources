@@ -1,5 +1,0 @@
-# for kube-prometheus-stack - required due to race condition on namespace creation
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: kps

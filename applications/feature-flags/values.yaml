@@ -1,13 +1,9 @@
-host: ""
 replicaCount: 2
 
 image:
-  repository: 869432184848.dkr.ecr.ap-south-1.amazonaws.com/feature-flags-service
-  tag: latest
+  repository: ghcr.io/shaarron/feature-flags-app/feature-flags-api
+  tag: v1.0.13
   pullPolicy: IfNotPresent
-
-imagePullSecrets:
-  - name: ecr-creds
 
 service:
   type: ClusterIP
@@ -43,3 +39,6 @@ resources:
   limits:
     memory: "256Mi"
     cpu: "100m"
+
+global:
+  host: ""

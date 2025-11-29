@@ -1,4 +1,9 @@
-host: ""     
+global:
+  host: ""
+
+ingress:
+  tlsSecretName: ""
+
 kube-prometheus-stack:
   namespaceOverride: kps
 
@@ -10,6 +15,13 @@ kube-prometheus-stack:
       podMonitorSelector: {}
 
   grafana:
+    externalSecrets:
+      enabled: false
+    admin:
+      existingSecret: grafana-secret
+      existingSecretUserKey: admin-user
+      existingSecretPasswordKey: admin-password
+
     namespaceOverride: kps
     persistence:
       enabled: true
@@ -18,17 +30,11 @@ kube-prometheus-stack:
       dashboards:
         enabled: true
         label: grafana_dashboard
-        searchNamespace: ALL
-
+        labelValue: "1"
 
   kube-state-metrics:
     namespaceOverride: kps
 
   prometheus-node-exporter:
      namespaceOverride: kps
-     
-# for local testing - disable node exporter
-  # nodeExporter:
-  #   enabled: false
-  # exporter:
-  #   enabled: false
+    

@@ -5,8 +5,17 @@ metadata:
   namespace: efk
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    cert-manager.io/cluster-issuer: "letsencrypt-production"
+    acme.cert-manager.io/http01-edit-in-place: "true"
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - kibana.{{ .Values.global.host }}
+      secretName: {{ .Values.ingress.tlsSecretName }}
   rules:
     - host: kibana.{{ .Values.global.host }}
       http:

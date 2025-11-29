@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-cert
+  namespace: cert-manager
+spec:
+  secretName: {{ .Values.certManagerConfig.wildcardCert.secretName }}
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: "*.{{ .Values.certManagerConfig.domain }}"
+  dnsNames:
+    - "*.{{ .Values.certManagerConfig.domain }}"
+    - "{{ .Values.certManagerConfig.domain }}"
+    - "*.dev.{{ .Values.certManagerConfig.domain }}"
+

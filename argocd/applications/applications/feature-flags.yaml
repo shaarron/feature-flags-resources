@@ -13,9 +13,9 @@ spec:
     path: applications/feature-flags
     helm:
       releaseName: feature-flags
-      values: |
-        global:
-          host: its-sharon.com
+      valueFiles:
+      - ../../argocd/applications/values.yaml
+
   destination:
     server: https://kubernetes.default.svc
     namespace: default
