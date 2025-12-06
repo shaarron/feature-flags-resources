@@ -123,7 +123,7 @@ data:
           "targets": [
             {
               "datasource": "$datasource",
-              "expr": "sum by (status, method, handler) (rate(flask_http_request_total[5m]))",
+              "expr": "sum by (status, method, handler) (rate(flask_http_request_total{namespace=\"$namespace\"}[5m]))",
               "legendFormat": "{{ "{{" }}status{{ "}}" }} {{ "{{" }}method{{ "}}" }} {{ "{{" }}handler{{ "}}" }}",
               "refId": "A"
             }
@@ -234,7 +234,7 @@ data:
             {
               "datasource": "$datasource",
               "editorMode": "code",
-              "expr": "sum(rate(flask_http_request_total{status=~\"5..\"}[5m]))",
+              "expr": "sum(rate(flask_http_request_total{status=~\"5..\", namespace=\"$namespace\"}[5m]))",
               "legendFormat": "5xx Error Rate",
               "range": true,
               "refId": "A"
@@ -329,7 +329,7 @@ data:
           "targets": [
             {
               "datasource": "$datasource",
-              "expr": "histogram_quantile(0.95, sum(rate(flask_http_request_duration_seconds_bucket[5m])) by (le))",
+              "expr": "histogram_quantile(0.95, sum(rate(flask_http_request_duration_seconds_bucket{namespace=\"$namespace\"}[5m])) by (le))",
               "legendFormat": "p95 Latency",
               "refId": "A"
             }
@@ -424,7 +424,7 @@ data:
             {
               "datasource": "$datasource",
               "editorMode": "code",
-              "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{pod=~\"feature-flags-api-.*\", image!=\"\", container!=\"POD\"}[5m]))",
+              "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=\"$namespace\", pod=~\"feature-flags-api-.*\", image!=\"\", container!=\"POD\"}[5m]))",
               "legendFormat": "{{ "{{" }}pod{{ "}}" }}",
               "range": true,
               "refId": "A"
@@ -520,7 +520,7 @@ data:
             {
               "datasource": "$datasource",
               "editorMode": "code",
-              "expr": "container_memory_usage_bytes{pod=~\"feature-flags-api-.*\", container!=\"POD\"} / 1024 / 1024",
+              "expr": "container_memory_usage_bytes{namespace=\"$namespace\", pod=~\"feature-flags-api-.*\", container!=\"POD\"} / 1024 / 1024",
               "legendFormat": "{{ "{{" }}pod{{ "}}" }}",
               "range": true,
               "refId": "A"
@@ -616,7 +616,7 @@ data:
             {
               "datasource": "$datasource",
               "editorMode": "code",
-              "expr": "sum by (pod) (container_memory_usage_bytes{pod=~\"feature-flags-api-.*\", container!=\"POD\"} / 1024 / 1024)",
+              "expr": "sum by (pod) (container_memory_usage_bytes{namespace=\"$namespace\", pod=~\"feature-flags-api-.*\", container!=\"POD\"} / 1024 / 1024)",
               "legendFormat": "{{ "{{" }}pod{{ "}}" }}",
               "range": true,
               "refId": "A"
@@ -649,6 +649,15 @@ data:
             "refresh": 1,
             "regex": "",
             "type": "datasource"
+          },
+          {
+            "name": "namespace",
+            "label": "Environment",
+            "type": "query",
+            "query": "label_values(flask_http_request_total, namespace)",
+            "refresh": 1,
+            "includeAll": false,
+            "multi": false
           }
         ]
       },
