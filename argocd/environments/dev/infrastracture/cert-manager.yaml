@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://github.com/shaarron/feature-flags-resources.git
     path: infrastructure/cert-manager
-    targetRevision: main
+    targetRevision: mulit-env-support
     helm:
       releaseName: cert-manager
       valueFiles:

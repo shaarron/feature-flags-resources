@@ -5,5 +5,5 @@ image:
   tag: dev-3c7b3f4
 
 kibana:
-  publicBaseUrl: "https://kibana.its-sharon.com"
+  publicBaseUrl: "https://kibana.dev.its-sharon.com"
 
