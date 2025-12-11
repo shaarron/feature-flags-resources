@@ -15,7 +15,7 @@ spec:
       releaseName: efk
       valueFiles:
       - ../../values.yaml
-      - values-dev.yaml
+
   destination:
     server: https://kubernetes.default.svc
     namespace: efk 
