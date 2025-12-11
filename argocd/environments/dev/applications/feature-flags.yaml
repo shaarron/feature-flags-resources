@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: feature-flags
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/shaarron/feature-flags-resources.git
+    targetRevision: main
+    path: applications/feature-flags
+    helm:
+      releaseName: feature-flags
+      valueFiles:
+      - ../../values.yaml
+      - values-dev.yaml
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
