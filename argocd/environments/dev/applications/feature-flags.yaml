@@ -14,7 +14,7 @@ spec:
     helm:
       releaseName: feature-flags
       valueFiles:
-      - ../../values.yaml
+      - values.yaml
 
   destination:
     server: https://kubernetes.default.svc
