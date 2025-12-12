@@ -1,5 +1,5 @@
-global:
-  host: "its-sharon.com"
+# global:
+#   host: "its-sharon.com"
 
 hostedZoneID: "Z10244981ZAMIY8KVE0M3"
 
@@ -33,5 +33,5 @@ grafana:
     enabled: true
 
 kibana:
-  publicBaseUrl: "https://kibana.its-sharon.com"
+  publicBaseUrl: "https://kibana.dev.its-sharon.com"
 
