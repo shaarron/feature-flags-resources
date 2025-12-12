@@ -15,7 +15,7 @@ spec:
       releaseName: efk
       valueFiles:
       - ../../argocd/environments/values.yaml
-      - ../../argocd/environments/dev/values.yaml
+      - ../../argocd/environments/staging/values.yaml
 
 
   destination:
