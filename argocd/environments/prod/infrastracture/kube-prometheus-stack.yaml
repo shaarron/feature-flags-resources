@@ -9,12 +9,15 @@ spec:
   project: default
   source:
     repoURL: https://github.com/shaarron/feature-flags-resources.git
-    targetRevision: main
+    targetRevision: mulit-env-support
     path: infrastructure/kube-prometheus-stack
     helm:
       releaseName: kube-prometheus-stack
       valueFiles:
-      - ../../argocd/applications/values.yaml
+      - ../../argocd/environments/values.yaml
+      - ../../argocd/environments/prod/values.yaml
+
+
   destination:
     server: https://kubernetes.default.svc
     namespace: kps

@@ -1,37 +1,8 @@
 global:
-  host: "its-sharon.com"
-
-hostedZoneID: "Z10244981ZAMIY8KVE0M3"
+  host: "staging.its-sharon.com"
 
 image:
-  repository: ghcr.io/shaarron/feature-flags-app/feature-flags-api
-  tag: latest # default tag unless overridden by environment-specific values.yaml
-
-clusterSecretStore:
-  provider:
-    aws:
-      region: "ap-south-1"
-
-ingress: 
-  tlsSecretName: "wildcard-itssharon"
-
-certManagerConfig:
-  domain: "its-sharon.com"
-  email: "sharonkovich@gmail.com"
-  route53:
-    region: "ap-south-1"
-    hostedZoneID: "Z10244981ZAMIY8KVE0M3"
-  wildcardCert:
-    secretName: "wildcard-itssharon"
-
-mongodb:
-  externalSecrets:
-    enabled: true
-
-grafana:
-  externalSecrets:
-    enabled: true
+  tag: rc-3c7b3f4
 
 kibana:
-  publicBaseUrl: "https://kibana.its-sharon.com"
-
+  publicBaseUrl: "https://kibana.staging.its-sharon.com"

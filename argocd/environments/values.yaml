@@ -1,6 +1,3 @@
-# global:
-#   host: "its-sharon.com"
-
 hostedZoneID: "Z10244981ZAMIY8KVE0M3"
 
 image:
@@ -26,12 +23,12 @@ certManagerConfig:
 
 mongodb:
   externalSecrets:
-    enabled: true
+    enabled: flase
 
 grafana:
   externalSecrets:
-    enabled: true
+    enabled: false
 
-kibana:
-  publicBaseUrl: "https://kibana.dev.its-sharon.com"
-
+kube-prometheus-stack:
+  nodeExporter:
+    enabled: false

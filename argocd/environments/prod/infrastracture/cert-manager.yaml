@@ -11,11 +11,13 @@ spec:
   source:
     repoURL: https://github.com/shaarron/feature-flags-resources.git
     path: infrastructure/cert-manager
-    targetRevision: main
+    targetRevision: mulit-env-support
     helm:
       releaseName: cert-manager
       valueFiles:
-      - ../../argocd/applications/values.yaml
+      - ../../argocd/environments/values.yaml
+      - ../../argocd/environments/prod/values.yaml
+
 
   destination:
     server: https://kubernetes.default.svc

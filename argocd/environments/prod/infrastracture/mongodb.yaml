@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/shaarron/feature-flags-resources.git
-    targetRevision: main
+    targetRevision: mulit-env-support
     path: infrastructure/mongodb
   destination:
     server: https://kubernetes.default.svc
