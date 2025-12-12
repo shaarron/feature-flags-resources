@@ -15,6 +15,8 @@ spec:
       releaseName: efk
       valueFiles:
       - ../../argocd/environments/values.yaml
+      - ../../argocd/environments/dev/values.yaml
+
 
   destination:
     server: https://kubernetes.default.svc
