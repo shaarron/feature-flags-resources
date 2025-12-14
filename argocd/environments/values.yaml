@@ -23,12 +23,8 @@ certManagerConfig:
 
 mongodb:
   externalSecrets:
-    enabled: flase
+    enabled: true
 
 grafana:
   externalSecrets:
-    enabled: false
-
-kube-prometheus-stack:
-  nodeExporter:
-    enabled: false
+    enabled: true
