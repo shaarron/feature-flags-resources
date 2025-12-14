@@ -1,0 +1,8 @@
+global:
+  host: "staging.its-sharon.com"
+
+image:
+  tag: rc-3c7b3f4
+
+kibana:
+  publicBaseUrl: "https://kibana.staging.its-sharon.com"

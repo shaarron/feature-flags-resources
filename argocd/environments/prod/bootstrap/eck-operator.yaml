@@ -1,29 +1,28 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cert-manager
+  name: eck-operator
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
-
   source:
-    repoURL: https://github.com/shaarron/feature-flags-resources.git
-    path: infrastructure/cert-manager
-    targetRevision: main
+    repoURL: https://helm.elastic.co
+    chart: eck-operator
+    targetRevision: 3.1.0
     helm:
-      releaseName: cert-manager
-      valueFiles:
-      - ../../argocd/applications/values.yaml
-
-  destination:
+      releaseName: eck-operator
+      parameters:
+        - name: installCRDs
+          value: "true"               
+  destination: 
     server: https://kubernetes.default.svc
-    namespace: cert-manager
-
+    namespace: elastic-system
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true

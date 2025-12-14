@@ -1,0 +1,8 @@
+global:
+  host: "dev.its-sharon.com"
+
+image:
+  tag: dev-3c7b3f4
+
+kibana:
+  publicBaseUrl: "https://kibana.dev.its-sharon.com"

@@ -1,23 +1,26 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: efk
+  name: kube-prometheus-stack
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "2" 
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   project: default
   source:
     repoURL: https://github.com/shaarron/feature-flags-resources.git
     targetRevision: main
-    path: infrastructure/efk
+    path: infrastructure/kube-prometheus-stack
     helm:
-      releaseName: efk
+      releaseName: kube-prometheus-stack
       valueFiles:
-      - ../../argocd/applications/values.yaml
+      - ../../argocd/environments/values.yaml
+      - ../../argocd/environments/dev/values.yaml
+
+
   destination:
     server: https://kubernetes.default.svc
-    namespace: efk 
+    namespace: kps
   syncPolicy:
     automated:
       prune: true
@@ -25,3 +28,4 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
+      - CRDs=true
