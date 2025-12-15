@@ -1,6 +1,6 @@
 global:
   host: "its-sharon.com"
 image:
-  tag: v1.0.18
+  tag: v1.0.19
 kibana:
   publicBaseUrl: "https://kibana.its-sharon.com"
