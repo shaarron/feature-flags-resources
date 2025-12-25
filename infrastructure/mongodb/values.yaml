@@ -20,25 +20,23 @@ mongo:
       cpu: "100m"
 
   readinessProbe:
-    exec:
-      command:
-        - mongosh
-        - --quiet
-        - --eval
-        - "db.adminCommand('ping')"
-    initialDelaySeconds: 10
-    periodSeconds: 10
-    timeoutSeconds: 5
-    failureThreshold: 3
+      exec:
+        command:
+          - /bin/sh
+          - -c
+          - "mongosh --port 27017 --quiet --eval 'db.runCommand({hello: 1})'"
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 6 
 
   livenessProbe:
     exec:
       command:
-        - mongosh
-        - --quiet
-        - --eval
-        - "db.adminCommand('ping')"
-    initialDelaySeconds: 30
+        - /bin/sh
+        - -c
+        - "mongosh --port 27017 --quiet --eval 'db.runCommand({hello: 1})'"
+    initialDelaySeconds: 60
     periodSeconds: 20
     timeoutSeconds: 5
     failureThreshold: 3
