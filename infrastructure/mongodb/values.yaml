@@ -39,7 +39,7 @@ mongo:
   #   initialDelaySeconds: 60
   #   periodSeconds: 20
   #   timeoutSeconds: 5
-    failureThreshold: 3
+    # failureThreshold: 3
 
   authenticationMode: ["SCRAM"]
 
