@@ -9,4 +9,4 @@ metadata:
 # based on the official ingress nginx controller dashboard id: 9614
 data:
   nginx-ingress.json: |-
-  {{ .Files.Get "dashboards/nginx-ingress.json" | indent 4 }}
+{{ .Files.Get "dashboards/nginx-ingress.json" | indent 4 }}
