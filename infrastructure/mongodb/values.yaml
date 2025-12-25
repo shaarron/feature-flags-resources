@@ -19,26 +19,26 @@ mongo:
       memory: "256Mi"
       cpu: "100m"
 
-  readinessProbe:
-      exec:
-        command:
-          - /bin/sh
-          - -c
-          - "mongosh --port 27017 --quiet --eval 'db.runCommand({hello: 1})'"
-      initialDelaySeconds: 30
-      periodSeconds: 10
-      timeoutSeconds: 5
-      failureThreshold: 6 
+  # readinessProbe:
+  #     exec:
+  #       command:
+  #         - /bin/sh
+  #         - -c
+  #         - "mongosh --port 27017 --quiet --eval 'db.runCommand({hello: 1})'"
+  #     initialDelaySeconds: 30
+  #     periodSeconds: 10
+  #     timeoutSeconds: 5
+  #     failureThreshold: 6 
 
-  livenessProbe:
-    exec:
-      command:
-        - /bin/sh
-        - -c
-        - "mongosh --port 27017 --quiet --eval 'db.runCommand({hello: 1})'"
-    initialDelaySeconds: 60
-    periodSeconds: 20
-    timeoutSeconds: 5
+  # livenessProbe:
+  #   exec:
+  #     command:
+  #       - /bin/sh
+  #       - -c
+  #       - "mongosh --port 27017 --quiet --eval 'db.runCommand({hello: 1})'"
+  #   initialDelaySeconds: 60
+  #   periodSeconds: 20
+  #   timeoutSeconds: 5
     failureThreshold: 3
 
   authenticationMode: ["SCRAM"]
