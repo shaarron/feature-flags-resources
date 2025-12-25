@@ -19,9 +19,9 @@ spec:
             - name: elasticsearch
               resources:
                 {{- toYaml .Values.elasticsearch.resources | nindent 16 }}
-              readinessProbe:
-                {{- toYaml .Values.elasticsearch.readinessProbe | nindent 16 }}
-              livenessProbe:
-                {{- toYaml .Values.elasticsearch.livenessProbe | nindent 16 }}
+              # readinessProbe:
+              #   {{- toYaml .Values.elasticsearch.readinessProbe | nindent 16 }}
+              # livenessProbe:
+              #   {{- toYaml .Values.elasticsearch.livenessProbe | nindent 16 }}
       volumeClaimTemplates:
         {{- toYaml .Values.elasticsearch.volumeClaims | nindent 8 }}
