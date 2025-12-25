@@ -45,7 +45,6 @@ mongo:
 
   authenticationMode: ["SCRAM"]
 
-# Controls whether to use AWS Secrets Manager (True) or Auto-Generate (False)
   externalSecrets:
     enabled: true
   secretName: mongo-secret
