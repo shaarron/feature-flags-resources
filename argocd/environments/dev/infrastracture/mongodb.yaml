@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/shaarron/feature-flags-resources.git
-    targetRevision: main
+    targetRevision: monitoring-enhancements
     path: infrastructure/mongodb
   destination:
     server: https://kubernetes.default.svc
