@@ -28,7 +28,7 @@ kube-prometheus-stack:
 
   grafana:
     externalSecrets:
-      enabled: false
+      enabled: true
     admin:
       existingSecret: grafana-secret
       existingSecretUserKey: admin-user
