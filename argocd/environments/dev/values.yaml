@@ -6,11 +6,3 @@ image:
   tag: dev-a721654
 kibana:
   publicBaseUrl: "https://kibana.dev.its-sharon.com"
-
-grafana:
-  externalSecrets:
-    enabled: true
-
-mongo:
-  externalSecrets:
-    enabled: true
