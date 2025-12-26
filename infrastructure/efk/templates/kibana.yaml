@@ -18,7 +18,3 @@ spec:
         - name: kibana
           resources:
             {{- toYaml .Values.kibana.resources | nindent 12 }}
-          readinessProbe:
-            {{- toYaml .Values.kibana.readinessProbe | nindent 12 }}
-          livenessProbe:
-            {{- toYaml .Values.kibana.livenessProbe | nindent 12 }}

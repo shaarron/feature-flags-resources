@@ -26,20 +26,6 @@ elasticsearch:
       cpu: "1"
       memory: 2Gi
 
-  readinessProbe:
-    httpGet:
-      path: /_cluster/health?local=true
-      port: 9200
-      scheme: HTTP 
-    initialDelaySeconds: 10
-    periodSeconds: 10
-
-  livenessProbe:
-    tcpSocket:
-      port: 9200
-    initialDelaySeconds: 30
-    periodSeconds: 20
-
   volumeClaims:
       - metadata:
           name: elasticsearch-data
@@ -90,25 +76,6 @@ fluent-bit:
     limits:
       cpu: "200m"
       memory: "200Mi"
-
-  livenessProbe:
-    httpGet:
-      path: /api/v1/health
-      port: 2020
-    initialDelaySeconds: 10
-    periodSeconds: 10
-    timeoutSeconds: 5
-    failureThreshold: 3
-
-  readinessProbe:
-    httpGet:
-      path: /api/v1/health
-      port: 2020
-    initialDelaySeconds: 10
-    periodSeconds: 10
-    timeoutSeconds: 5
-    successThreshold: 1
-    failureThreshold: 3
 
   env:
     - name: ES_PASSWORD
