@@ -14,17 +14,9 @@ ingress:
 
 certManagerConfig:
   domain: "its-sharon.com"
-  email: "sharonkovich@gmail.com"
+  email: "sharon@its-sharon.com"
   route53:
     region: "ap-south-1"
     hostedZoneID: "Z10244981ZAMIY8KVE0M3"
   wildcardCert:
     secretName: "wildcard-itssharon"
-
-mongodb:
-  externalSecrets:
-    enabled: true
-
-grafana:
-  externalSecrets:
-    enabled: true

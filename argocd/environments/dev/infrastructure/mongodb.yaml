@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: external-secrets-setup
+  name: mongodb
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "2"
@@ -9,17 +9,16 @@ spec:
   project: default
   source:
     repoURL: https://github.com/shaarron/feature-flags-resources.git
-    targetRevision: monitoring-enhancements
-    path: infrastructure/external-secrets-setup
+    targetRevision: main
+    path: infrastructure/mongodb
     helm:
+      releaseName: mongodb
       valueFiles:
       - ../../argocd/environments/values.yaml
       - ../../argocd/environments/dev/values.yaml
-
-
   destination:
     server: https://kubernetes.default.svc
-    namespace: external-secrets
+    namespace: default
   syncPolicy:
     automated:
       prune: true

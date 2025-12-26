@@ -82,7 +82,7 @@ graph TD
 
 This repository uses a **centralized configuration pattern**. A single values file overrides settings across all applications and infrastructure components (like domains, regions, and secrets) to ensure consistency.
 
-**Source of Truth:** [`argocd/applications/values.yaml`](argocd/applications/values.yaml)
+**Source of Truth:** [`argocd/environments/values.yaml`](argocd/environments/values.yaml)
 
 ### How it Works
 Argo CD Applications reference the global values file using `valueFiles`.
@@ -92,7 +92,7 @@ Argo CD Applications reference the global values file using `valueFiles`.
 source:
   helm:
     valueFiles:
-    - ../../argocd/applications/values.yaml  # References the global config
+    - ../../argocd/environments/values.yaml  # References the global config
 ```
 
 ## Helm Charts
@@ -174,9 +174,9 @@ The dashboard relies on the specific mappings defined in the `index_template.jso
 kubectl create namespace argocd
 
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-t
+
 # Apply the root app
-kubectl apply -f argocd/root-app.yaml -n argocd
+kubectl apply -f argocd/root-dev.yaml -n argocd
 
 # Verify
 kubectl get ns
@@ -195,7 +195,7 @@ kubectl -n argocd get secret argocd-initial-admin-secret \
 # Login with the password from above
 argocd login localhost:8080 --username admin --password <PASSWORD> --insecure
 ```
-### Login trough UI 
+### Login through UI 
 ```sh
 # Port forward 
  kubectl port-forward svc/argocd-server -n argocd 8080:443 

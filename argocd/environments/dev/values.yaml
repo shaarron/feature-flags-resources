@@ -1,5 +1,4 @@
 env: dev
-
 global:
   host: "dev.its-sharon.com"
 image:
@@ -7,3 +6,6 @@ image:
 kibana:
   config:
     server.publicBaseUrl: "https://kibana.dev.its-sharon.com"
+
+mongo:
+  members: 1

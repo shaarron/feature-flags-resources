@@ -63,5 +63,5 @@ kube-prometheus-stack:
     namespaceOverride: kps
 
   prometheus-node-exporter:
-     namespaceOverride: kps
+    namespaceOverride: kps
     
