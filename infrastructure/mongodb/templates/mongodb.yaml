@@ -18,7 +18,7 @@ spec:
       passwordSecretRef:
         name: {{ .Values.mongo.secretName }}
         key: MONGO_INITDB_ROOT_PASSWORD
-      scramCredentialsSecretName: {{ .Values.mongo.rootUser }}-scram-credentials
+      scramCredentialsSecretName: {{ .Values.mongo.rootUser }}
       roles:
         - name: root
           db: admin
@@ -28,7 +28,7 @@ spec:
       passwordSecretRef:
         name: {{ .Values.mongo.secretName }}
         key: APP_USER_PASSWORD
-      scramCredentialsSecretName: {{ .Values.mongo.appUser }}-scram-credentials
+      scramCredentialsSecretName: {{ .Values.mongo.appUser }}
       roles:
         - name: readWrite
           db: {{ .Values.mongo.database | quote }}
