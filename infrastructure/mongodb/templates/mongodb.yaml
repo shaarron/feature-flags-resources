@@ -51,7 +51,3 @@ spec:
             - name: mongod
               resources:
                 {{- toYaml .Values.mongo.resources | nindent 16 }}
-              # readinessProbe:
-              #   {{- toYaml .Values.mongo.readinessProbe | nindent 16 }}
-              # livenessProbe:
-              #   {{- toYaml .Values.mongo.livenessProbe | nindent 16 }}
