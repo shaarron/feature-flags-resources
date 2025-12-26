@@ -175,7 +175,7 @@ kubectl create namespace argocd
 
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
-# Apply the root app
+# Apply the root app (example with dev)
 kubectl apply -f argocd/root-dev.yaml -n argocd
 
 # Verify
