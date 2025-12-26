@@ -50,20 +50,6 @@ kibana:
     limits:
       memory: "2Gi"
 
-  readinessProbe:
-    httpGet:
-      path: /api/status
-      port: 5601
-    initialDelaySeconds: 10
-    periodSeconds: 10
-
-  livenessProbe:
-    httpGet:
-      path: /api/status
-      port: 5601
-    initialDelaySeconds: 20
-    periodSeconds: 20
-
 fluent-bit:
   image:
     repository: fluent/fluent-bit
