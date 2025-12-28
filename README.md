@@ -177,14 +177,6 @@ The dashboard relies on the specific mappings defined in the `index_template.jso
 * **Numeric Fields (`short`/`integer`):** Fields like `status`, `code`, and `latency_ms` are explicitly mapped as numeric types. This allows the dashboard to perform range queries (e.g., `status >= 400`) and aggregations. If these were mapped as default strings, the error rate logic would fail.
 * **Keyword Fields:** Fields like `levelname` and `kubernetes.container_name` use the `keyword` type, which is required for the "Top 10" bucket aggregations used in the visualization splits.
 
-
-## Grafana Dashboard: Nginx Ingress Controller
-
-This dashboard is based on the official NGINX Ingress Controller dashboard (ID: 9614). It provides comprehensive visibility into the ingress traffic, performance, and controller status.
-
-<img src="grafana-ingress-nginx-dashboard.png" alt="grafana-ingress-nginx-dashboard" width="1200" >
-
-
 ## Deploy Locally
 
 
