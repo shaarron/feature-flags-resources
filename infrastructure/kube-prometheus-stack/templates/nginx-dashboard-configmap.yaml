@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-ingress-grafana-dashboard
+  namespace: kps
+  labels:
+    grafana_dashboard: "1" 
+    app.kubernetes.io/name: ingress-nginx
+# based on the official ingress nginx controller dashboard id: 9614
+data:
+  nginx-ingress.json: |-
+{{ .Files.Get "dashboards/nginx-ingress.json" | indent 4 }}

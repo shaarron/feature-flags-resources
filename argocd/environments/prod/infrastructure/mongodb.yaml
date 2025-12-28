@@ -11,6 +11,11 @@ spec:
     repoURL: https://github.com/shaarron/feature-flags-resources.git
     targetRevision: main
     path: infrastructure/mongodb
+    helm:
+      releaseName: mongodb
+      valueFiles:
+      - ../../argocd/environments/values.yaml
+      - ../../argocd/environments/prod/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: default

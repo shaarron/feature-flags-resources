@@ -15,8 +15,9 @@ This repository contains the **infrastructure manifests** for deploying [**Featu
   - **[Argocd Deployment Flow](#argocd-deployment-flow)**
   - **[Sync waves](#sync-waves)**
   - **[Argocd Applications Structure](#argocd-applications-structure)**
-  - **[Grafana Dashboards](#grafana-dashboard-feature-flags-api-monitoring)**
-  - **[Kibana Dashboards](#kibana-dashboard-feature-flags-dashboard)**
+  - **[Grafana Dashboard: Feature Flags API](#grafana-dashboard-feature-flags-api-monitoring)**
+  - **[Grafana Dashboard: Nginx Ingress Controller](#grafana-dashboard-nginx-ingress-controller-dashboard)**
+  - **[Kibana Dashboard: Feature Flags API](#kibana-dashboard-feature-flags-dashboard)**
   - **[Deploy Locally](#deploy-locally)**
 
 ## Argocd Deployment Flow
@@ -82,7 +83,7 @@ graph TD
 
 This repository uses a **centralized configuration pattern**. A single values file overrides settings across all applications and infrastructure components (like domains, regions, and secrets) to ensure consistency.
 
-**Source of Truth:** [`argocd/applications/values.yaml`](argocd/applications/values.yaml)
+**Source of Truth:** [`argocd/environments/values.yaml`](argocd/environments/values.yaml)
 
 ### How it Works
 Argo CD Applications reference the global values file using `valueFiles`.
@@ -92,7 +93,7 @@ Argo CD Applications reference the global values file using `valueFiles`.
 source:
   helm:
     valueFiles:
-    - ../../argocd/applications/values.yaml  # References the global config
+    - ../../argocd/environments/values.yaml  # References the global config
 ```
 
 ## Helm Charts
@@ -114,6 +115,12 @@ Comprehensive monitoring solution including Prometheus for metrics collection, G
 ### [Mongodb](infrastructure/mongodb/)
 Deploys MongoDB Community Edition custom resources managed by the MongoDB Kubernetes Operator. Provides the persistent data store for the Feature Flags application.
 
+## ArgoCD Dashboard
+
+This screenshot demonstrates the **App-of-Apps** pattern in action for the Feature Flags project. It visualizes the real-time hierarchy and health status of the entire stack.
+
+<img src="argocd-dashboard-demo.png" alt="argocd-dashboard-demo" width="1200" >
+
 ## Grafana Dashboard: Feature Flags API Monitoring
 
 This Grafana dashboard monitors the Feature Flags API on Kubernetes. 
@@ -127,9 +134,16 @@ Provisioned via the `kube-prometheus-stack` Helm chart (ConfigMap: `feature-flag
 | **HTTP Request Rate** | `sum by (status, method, handler) (rate(flask_http_request_total[5m]))` | Displays the rate of incoming HTTP requests handled by the Flask API over the last 5 minutes. |
 | **HTTP Error Rate (5xx)** | `sum(rate(flask_http_request_total{status=~"5.."}[5m]))` | Shows the rate of server-side errors (5xx) to detect application or backend failures. |
 | **Response Time (p95)** | `histogram_quantile(0.95, sum(rate(flask_http_request_duration_seconds_bucket[5m])) by (le))` | Indicates the 95th percentile response time of API requests. |
-| **Pod CPU Usage** | `sum by (pod) (rate(container_cpu_usage_seconds_total{pod=~"feature-flags-api-.*", container!="POD"}[5m]))` | Monitors CPU utilization of the application containers (excludes infrastructure containers). |
-| **Per-Container Memory**| `container_memory_usage_bytes{pod=~"feature-flags-api-.*", container!="POD"} / 1024 / 1024` | Tracks memory usage of individual application containers within the pods (useful if sidecars are present). |
-| **Pod Memory Usage** | `sum by (pod) (container_memory_usage_bytes{pod=~"feature-flags-api-.*", container!="POD"} / 1024 / 1024)` | Tracks total memory consumption (in MB) aggregated per pod. |
+| **Pod CPU Usage** | `avg by (pod) (rate(container_cpu_usage_seconds_total{pod=~"feature-flags-api-.*", image!="", container!="POD"}[5m]))` | Monitors average CPU utilization of the application containers. |
+| **Pod Memory Usage (MB)** | `avg by (pod) (container_memory_usage_bytes{pod=~"feature-flags-api-.*", container!="POD"} / 1024 / 1024)` | Monitors average memory usage per pod in megabytes.
+| **Platform Activity: Create vs. Update** | `sum by (method) (increase(flask_http_request_total{method=~"POST/PUT"}[$__range]))` | Displays the distribution of state-changing operations (POST vs PUT) to monitor user engagement (creating new flags vs updating existing ones). |
+
+
+## Grafana Dashboard: Nginx Ingress Controller Dashboard
+
+This dashboard is based on the official [NGINX Ingress Controller dashboard (ID: 9614)](https://grafana.com/grafana/dashboards/9614-nginx-ingress-controller/). It provides comprehensive visibility into the ingress traffic, performance, and controller status.
+
+<img src="grafana-ingress-nginx-dashboard.png" alt="grafana-ingress-nginx-dashboard" width="1200" >
 
 
 ## Kibana Dashboard: Feature Flags Dashboard
@@ -163,9 +177,6 @@ The dashboard relies on the specific mappings defined in the `index_template.jso
 * **Numeric Fields (`short`/`integer`):** Fields like `status`, `code`, and `latency_ms` are explicitly mapped as numeric types. This allows the dashboard to perform range queries (e.g., `status >= 400`) and aggregations. If these were mapped as default strings, the error rate logic would fail.
 * **Keyword Fields:** Fields like `levelname` and `kubernetes.container_name` use the `keyword` type, which is required for the "Top 10" bucket aggregations used in the visualization splits.
 
-
-
-
 ## Deploy Locally
 
 
@@ -174,9 +185,9 @@ The dashboard relies on the specific mappings defined in the `index_template.jso
 kubectl create namespace argocd
 
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-t
-# Apply the root app
-kubectl apply -f argocd/root-app.yaml -n argocd
+
+# Apply the root app (example with dev)
+kubectl apply -f argocd/root-dev.yaml -n argocd
 
 # Verify
 kubectl get ns
@@ -195,7 +206,7 @@ kubectl -n argocd get secret argocd-initial-admin-secret \
 # Login with the password from above
 argocd login localhost:8080 --username admin --password <PASSWORD> --insecure
 ```
-### Login trough UI 
+### Login through UI 
 ```sh
 # Port forward 
  kubectl port-forward svc/argocd-server -n argocd 8080:443 

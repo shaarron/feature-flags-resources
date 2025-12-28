@@ -8,10 +8,15 @@ namespace: efk
 
 elasticsearch:
   version: "9.1.5"
-  selfSignedDisabled: true
   nodeSetName: "default"
   nodeCount: 2
-  allowMmap: false
+  config:
+    node.store.allow_mmap: false
+
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
 
   resources:
     requests:
@@ -21,26 +26,35 @@ elasticsearch:
       cpu: "1"
       memory: 2Gi
 
-  storage:
-    accessModes: ["ReadWriteOnce"]
-    size: 10Gi
+  volumeClaims:
+      - metadata:
+          name: elasticsearch-data
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
 
 kibana:
   version: "9.1.5"
   count: 1
   elasticsearchRef: "elasticsearch"
+
+  config:
+    server.publicBaseUrl: ""
+
   resources:
     requests:
       cpu: "400m"
       memory: "1Gi"
     limits:
       memory: "2Gi"
-  publicBaseUrl: ""
 
 fluent-bit:
   image:
     repository: fluent/fluent-bit
     tag: 4.2.0
+
   resources:
     requests:
       cpu: "100m"

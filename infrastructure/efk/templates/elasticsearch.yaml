@@ -6,15 +6,13 @@ metadata:
 spec:
   version: {{ .Values.elasticsearch.version | quote }}
   http:
-    tls:
-      selfSignedCertificate:
-        disabled: {{ .Values.elasticsearch.selfSignedDisabled }}
+    {{- toYaml .Values.elasticsearch.http | nindent 4 }}
 
   nodeSets:
     - name: {{ .Values.elasticsearch.nodeSetName }}
       count: {{ .Values.elasticsearch.nodeCount }}
       config:
-        node.store.allow_mmap: {{ .Values.elasticsearch.allowMmap }}
+        {{- toYaml .Values.elasticsearch.config | nindent 8 }}
       podTemplate:
         spec:
           containers:
@@ -22,10 +20,4 @@ spec:
               resources:
                 {{- toYaml .Values.elasticsearch.resources | nindent 16 }}
       volumeClaimTemplates:
-        - metadata:
-            name: elasticsearch-data
-          spec:
-            accessModes: {{ toYaml .Values.elasticsearch.storage.accessModes | nindent 12 }}
-            resources:
-              requests:
-                storage: {{ .Values.elasticsearch.storage.size }}
+        {{- toYaml .Values.elasticsearch.volumeClaims | nindent 8 }}

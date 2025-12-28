@@ -14,13 +14,25 @@ kube-prometheus-stack:
       podMonitorSelectorNilUsesHelmValues: false
       podMonitorSelector: {}
 
+      readinessProbe:
+        httpGet:
+          path: /-/ready
+          port: 9090
+        initialDelaySeconds: 30
+
+      livenessProbe:
+        httpGet:
+          path: /-/healthy
+          port: 9090
+        initialDelaySeconds: 30
+
   grafana:
     externalSecrets:
-      enabled: false
+      enabled: true
     admin:
       existingSecret: grafana-secret
-      existingSecretUserKey: admin-user
-      existingSecretPasswordKey: admin-password
+      UserKey: admin-user
+      PasswordKey: admin-password
 
     namespaceOverride: kps
     persistence:
@@ -32,9 +44,24 @@ kube-prometheus-stack:
         label: grafana_dashboard
         labelValue: "1"
 
+    readinessProbe:
+      httpGet:
+        path: /api/health
+        port: 3000
+      initialDelaySeconds: 30
+      periodSeconds: 10
+
+    livenessProbe:
+      httpGet:
+        path: /api/health
+        port: 3000
+      initialDelaySeconds: 60
+      periodSeconds: 30
+
+
   kube-state-metrics:
     namespaceOverride: kps
 
   prometheus-node-exporter:
-     namespaceOverride: kps
+    namespaceOverride: kps
     
