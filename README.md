@@ -16,10 +16,10 @@ This repository contains the **Kubernetes infrastructure manifests** for deployi
 
 ## Table Of Contents
 - **[Argocd Deployment Flow](#argocd-deployment-flow)**
-- **[Sync waves](#sync-waves)**
-- **[Argocd Applications Structure](#argocd-applications-structure)**
-- **[Global Configuration Strategy](#global-configuration-strategy)**
-- **[Argocd Dashboard](#argocd-dashboard)**
+  - **[Argocd Applications Structure](#argocd-applications-structure)**
+  - **[Sync waves](#sync-waves)**
+  - **[Global Configuration Strategy](#global-configuration-strategy)**
+  - **[Argocd Dashboard](#argocd-dashboard)**
 - **[Helm Charts](#helm-charts)**
   - **[Application charts](#application-charts)**
   - **[Infrastructure charts](#infrastructure-charts)**
@@ -51,24 +51,7 @@ graph TD
   D1 --> D3[MongoDB]
 ```
 
-
-## Sync waves
-
-| Component               | Namespace        | Sync Wave | Notes |
-|-------------------------|------------------|-----------|-------|
-| MongoDB Operator       | `mongodb`        | `1`       | Installs MongoDB Community Operator |
-| ECK Operator           | `elastic-system` | `1`       | Deploys ECK operator(Elasticsearch & Kibana) |
-| External Secrets Operator | `external-secrets` | `1` | Installs External Secrets Operator |
-| Cert Manager           | `cert-manager` | `1`       | Installs Cert-Manager controller and ClusterIssuers for TLS management |
-| Ingress NGINX           | `ingress-nginx` | `1`       | Deploys Ingress NGINX controller |
-| External Secrets Setup         |  `external-secrets`| `2`       | Configures the AWS `ClusterSecretStore` configuration |
-| Kube Prometheus Stack  | `kps`            | `2`       | Metrics stack (Prometheus, Grafana, etc.) |
-| EFK Stack              | `efk`            | `2`       | Fluent Bit → Elasticsearch → Kibana |
-| Feature Flags Stack    | `default`        | `3`       | Umbrella chart: API + MongoDB (Internal ordering via InitContainers) |
-
----
-
-## Argocd Applications Structure
+### Argocd Applications Structure
 
 1. **Bootstrap**
    - Install ECK operator + crds
@@ -87,8 +70,25 @@ graph TD
 3. **Applications**
    - Deploy **Feature-Flags Stack** (Umbrella chart bundling **API** and **MongoDB**)
 
+
+### Sync waves
+
+| Component               | Namespace        | Sync Wave | Notes |
+|-------------------------|------------------|-----------|-------|
+| MongoDB Operator       | `mongodb`        | `1`       | Installs MongoDB Community Operator |
+| ECK Operator           | `elastic-system` | `1`       | Deploys ECK operator(Elasticsearch & Kibana) |
+| External Secrets Operator | `external-secrets` | `1` | Installs External Secrets Operator |
+| Cert Manager           | `cert-manager` | `1`       | Installs Cert-Manager controller and ClusterIssuers for TLS management |
+| Ingress NGINX           | `ingress-nginx` | `1`       | Deploys Ingress NGINX controller |
+| External Secrets Setup         |  `external-secrets`| `2`       | Configures the AWS `ClusterSecretStore` configuration |
+| Kube Prometheus Stack  | `kps`            | `2`       | Metrics stack (Prometheus, Grafana, etc.) |
+| EFK Stack              | `efk`            | `2`       | Fluent Bit → Elasticsearch → Kibana |
+| Feature Flags Stack    | `default`        | `3`       | Umbrella chart: API + MongoDB (Internal ordering via InitContainers) |
+
+
+
  
-## Global Configuration Strategy
+### Global Configuration Strategy
 
 This repository uses a **centralized configuration pattern**. A single values file overrides settings across all applications and infrastructure components (like domains, regions, and secrets) to ensure consistency.
 
