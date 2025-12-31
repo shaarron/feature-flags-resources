@@ -1,0 +1,10 @@
+# This file is empty because all default values for the subcharts 
+# (feature-flags-api and mongodb) are already correctly configured 
+# in their respective values.yaml files.
+#
+# You only need to add configuration here if you want to OVERRIDE 
+# the defaults of the subcharts.
+#
+# Example override:
+# feature-flags-api:
+#   replicaCount: 5

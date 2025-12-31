@@ -1,0 +1,13 @@
+apiVersion: v2
+name: feature-flags-stack
+description: Umbrella chart for Feature Flags API and MongoDB
+type: application
+version: 1.0.0
+
+dependencies:
+  - name: feature-flags-api
+    version: 1.0.0
+    repository: "file://../../applications/feature-flags-api"
+  - name: mongodb
+    version: 1.0.0
+    repository: "file://../../infrastructure/mongodb"

@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/shaarron/feature-flags-resources.git
     targetRevision: main
-    path: applications/feature-flags
+    path: applications/feature-flags-stack
     helm:
       releaseName: feature-flags
       valueFiles:

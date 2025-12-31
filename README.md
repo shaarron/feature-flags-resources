@@ -1,24 +1,33 @@
 # Feature Flags Resources
 
-This repository contains the **infrastructure manifests** for deploying [**Feature Flags App**](https://github.com/shaarron/feature-flags-app). 
+This repository contains the **Kubernetes infrastructure manifests** for deploying [**Feature Flags App**](https://github.com/shaarron/feature-flags-app). 
 
 
-**Feature Flags App** running on **Amazon EKS**, managed with **Argo CD** and **Helm**, following modern GitOps principles - “App-of-Apps” pattern.
+**Feature Flags App** running on **Amazon EKS**, managed with **Argo CD** and **Helm**, following modern GitOps principles using the **App-of-Apps** pattern.
 
 **Components overview**
 - **Core App**: Feature Flags API (with MongoDB) 
+- **Ingress Controller**: NGINX Ingress Controller
+- **Secrets Management**: External Secrets Operator
+- **Certificate Management**: Cert-Manager
 - **Monitoring**: Kube-Prometheus-Stack (Prometheus, Grafana)  
 - **Logging**: EFK Stack (Elasticsearch, Fluent Bit, Kibana)
 
 
 ## Table Of Contents
-  - **[Argocd Deployment Flow](#argocd-deployment-flow)**
-  - **[Sync waves](#sync-waves)**
+- **[Argocd Deployment Flow](#argocd-deployment-flow)**
   - **[Argocd Applications Structure](#argocd-applications-structure)**
+  - **[Sync waves](#sync-waves)**
+  - **[Global Configuration Strategy](#global-configuration-strategy)**
+  - **[Argocd Dashboard](#argocd-dashboard)**
+- **[Helm Charts](#helm-charts)**
+  - **[Application charts](#application-charts)**
+  - **[Infrastructure charts](#infrastructure-charts)**
+- **[Observability](#observability)**
   - **[Grafana Dashboard: Feature Flags API](#grafana-dashboard-feature-flags-api-monitoring)**
   - **[Grafana Dashboard: Nginx Ingress Controller](#grafana-dashboard-nginx-ingress-controller-dashboard)**
   - **[Kibana Dashboard: Feature Flags API](#kibana-dashboard-feature-flags-dashboard)**
-  - **[Deploy Locally](#deploy-locally)**
+- **[Deploy Locally](#deploy-locally)**
 
 ## Argocd Deployment Flow
 
@@ -32,17 +41,37 @@ graph TD
   A --> C[Infrastructure Layer]
   C --> C1[Kube Prometheus Stack]
   C --> C2[EFK Stack]
-  C --> C3[MongoDB]
   C --> C4[Cert Manager]
   C --> C5[Ingress NGINX]
   C --> C6[External Secrets Setup]
 
   A --> D[Application Layer]
-  D --> D1[Feature-Flags App]
+  D --> D1[Feature-Flags Stack]
+  D1 --> D2[API]
+  D1 --> D3[MongoDB]
 ```
 
+### Argocd Applications Structure
 
-## Sync waves
+1. **Bootstrap**
+   - Install ECK operator + crds
+   - Install MongoDB operator + crds
+   - Install External Secrets operator + crds
+
+2. **Infrastructure**
+   - Deploy **kube-prometheus-stack**
+   - Deploy **EFK**
+     - [ECK](https://www.elastic.co/docs/deploy-manage/deploy-manage/deploy/cloud-on-k8s) (**Elastic Cloud Kubernetes** - for Elasticsearch & kibana)
+     - Fluent Bit
+   - Deploy **Ingress NGINX**
+   - Deploy **external-secrets-setup** (ClusterSecretStore configuration)
+   - Deploy **cert-manager**
+
+3. **Applications**
+   - Deploy **Feature-Flags Stack** (Umbrella chart bundling **API** and **MongoDB**)
+
+
+### Sync waves
 
 | Component               | Namespace        | Sync Wave | Notes |
 |-------------------------|------------------|-----------|-------|
@@ -52,41 +81,21 @@ graph TD
 | Cert Manager           | `cert-manager` | `1`       | Installs Cert-Manager controller and ClusterIssuers for TLS management |
 | Ingress NGINX           | `ingress-nginx` | `1`       | Deploys Ingress NGINX controller |
 | External Secrets Setup         |  `external-secrets`| `2`       | Configures the AWS `ClusterSecretStore` configuration |
-| MongoDB          | `default` | `2`       | Deploys the actual MongoDB ReplicaSet instance (Custom Resource) |
 | Kube Prometheus Stack  | `kps`            | `2`       | Metrics stack (Prometheus, Grafana, etc.) |
 | EFK Stack              | `efk`            | `2`       | Fluent Bit → Elasticsearch → Kibana |
-| Feature Flags API      | `default`        | `3`       | Python Flask-based API for toggling flags |
+| Feature Flags Stack    | `default`        | `3`       | Umbrella chart: API + MongoDB (Internal ordering via InitContainers) |
 
----
 
-## Argocd Applications Structure
 
-1. **Bootstrap**
-   - Install ECK operator + crds
-   - Install MongoDB operator + crds
-   - Install External Secrets operator + crds
-
-2. **Infrastructure**
-   - Deploy **kube-prometheus-stack**
-   - Deploy **MongoDB**
-   - Deploy **EFK**
-     - [ECK](https://www.elastic.co/docs/deploy-manage/deploy/cloud-on-k8s) (**Elasic Cloud Kubernetes** - for Elasticsearch & kibana)
-     - Fluent Bit
-   - Deploy **Ingress NGINX**
-   - Deploy **external-secrets-setup** (ClusterSecretStore configuration)
-   - Deploy **cert-manager**
-
-3. **Applications**
-   - Deploy **Feature-Flags API**
  
-## Global Configuration Strategy
+### Global Configuration Strategy
 
 This repository uses a **centralized configuration pattern**. A single values file overrides settings across all applications and infrastructure components (like domains, regions, and secrets) to ensure consistency.
 
 **Source of Truth:** [`argocd/environments/values.yaml`](argocd/environments/values.yaml)
 
 ### How it Works
-Argo CD Applications reference the global values file using `valueFiles`.
+Argo CD Applications reference the global values file using `valueFiles`. 
 
 **Example:**
 ```yaml
@@ -98,22 +107,32 @@ source:
 
 ## Helm Charts
 
-This repository includes several Helm charts located in the [infrastructure/](infrastructure/) directory, each managing a specific component of the observability and database stack:
+### Infrastructure charts 
 
-### [Cert-manager](infrastructure/cert-manager/)
+- [Cert-manager](infrastructure/cert-manager/)
 Manages TLS certificates for Kubernetes applications. Automatically provisions and renews certificates from Let's Encrypt and other certificate authorities. Essential for securing ingress traffic and enabling HTTPS.
 
-### [EFK](infrastructure/efk/)
+- [EFK](infrastructure/efk/)
 Complete logging stack combining Elasticsearch, Fluent Bit, and Kibana. Fluent Bit collects logs from all pods, forwards them to Elasticsearch for indexing, and Kibana provides a web UI for log analysis and visualization.
 
-### [External-secrets-setup](infrastructure/external-secrets-setup/)
+- [External-secrets-setup](infrastructure/external-secrets-setup/)
 Configures the ClusterSecretStore and required ServiceAccount resources for External Secrets integration. Enables secure integration with external secret management systems like AWS Secrets Manager. The External Secrets Operator is deployed separately in the bootstrap layer.
 
-### [Kube-prometheus-stack](infrastructure/kube-prometheus-stack/)
+- [Kube-prometheus-stack](infrastructure/kube-prometheus-stack/)
 Comprehensive monitoring solution including Prometheus for metrics collection, Grafana for visualization, and Alertmanager for alerting. Pre-configured with custom dashboards for the Feature Flags API.
 
-### [Mongodb](infrastructure/mongodb/)
-Deploys MongoDB Community Edition custom resources managed by the MongoDB Kubernetes Operator. Provides the persistent data store for the Feature Flags application.
+- [Mongodb](infrastructure/mongodb/)
+Provides the persistent data store for the Feature Flags application. While the chart source is located in `infrastructure/`, it is deployed as a sub-chart (dependency) of the `feature-flags-stack` application.
+
+### Application charts
+
+- [Feature-Flags Stack](applications/feature-flags-stack/)  
+Umbrella chart bundling **API** and **MongoDB** for deploying full feature flags stack
+
+- [Feature-Flags API](applications/feature-flags-api/)  
+The main feature flags application API 
+
+
 
 ## ArgoCD Dashboard
 
@@ -121,7 +140,10 @@ This screenshot demonstrates the **App-of-Apps** pattern in action for the Featu
 
 <img src="argocd-dashboard-demo.png" alt="argocd-dashboard-demo" width="1200" >
 
-## Grafana Dashboard: Feature Flags API Monitoring
+
+## Observability
+
+### Grafana Dashboard: Feature Flags API Monitoring
 
 This Grafana dashboard monitors the Feature Flags API on Kubernetes. 
 Provisioned via the `kube-prometheus-stack` Helm chart (ConfigMap: `feature-flags-api-grafana-dashboard`), it combines Flask app metrics (`prometheus_flask_exporter`) with Kubernetes metrics from Prometheus to visualize traffic, performance, and resource usage.
@@ -139,20 +161,19 @@ Provisioned via the `kube-prometheus-stack` Helm chart (ConfigMap: `feature-flag
 | **Platform Activity: Create vs. Update** | `sum by (method) (increase(flask_http_request_total{method=~"POST/PUT"}[$__range]))` | Displays the distribution of state-changing operations (POST vs PUT) to monitor user engagement (creating new flags vs updating existing ones). |
 
 
-## Grafana Dashboard: Nginx Ingress Controller Dashboard
+### Grafana Dashboard: Nginx Ingress Controller Dashboard
 
 This dashboard is based on the official [NGINX Ingress Controller dashboard (ID: 9614)](https://grafana.com/grafana/dashboards/9614-nginx-ingress-controller/). It provides comprehensive visibility into the ingress traffic, performance, and controller status.
 
 <img src="grafana-ingress-nginx-dashboard.png" alt="grafana-ingress-nginx-dashboard" width="1200" >
 
-
-## Kibana Dashboard: Feature Flags Dashboard
+### Kibana Dashboard: Feature Flags Dashboard
 
 The dashboard, titled "Feature Flags Dashboard", focuses on high-level log volume, service activity, and error rates, particularly targeting feature flags application common log fields like HTTP status codes (`status`/`code`) and Python/standard logging levels (`levelname`).
 
 <img src="kibana-dashboard-demo.png" alt="kibana-dashboard-demo" width="1200" >
 
-### Dashboard Panels Overview
+#### Dashboard Panels Overview
 
 The dashboard is structured into several panels for immediate observability into log health and volume.
 
@@ -166,13 +187,13 @@ The dashboard is structured into several panels for immediate observability into
 | **Pie Chart** | **Log Volume by Service** | Count of records, aggregated by service. | Top 5 `kubernetes.container_name.keyword` values. |
 | **Pie Chart** | **Error Distribution** | Count of records, aggregated by code. | **Filter:** `code >= 400` **OR** `status >= 400`. Grouped by `code` field ranges. |
 
-### Technical Implementation Details
+#### Technical Implementation Details
 
-#### 1. Global Filter: Kubernetes Metadata Required
+##### 1. Global Filter: Kubernetes Metadata Required
 The dashboard applies a **Global Filter** requiring the existence of the field `kubernetes.container_name.keyword`.
 * **Implication:** Only logs originating from Kubernetes containers will be visible. Logs shipped from external sources (e.g., VMs, bare metal) without this specific metadata field will be automatically filtered out.
 
-#### 2. Index Template & Data Types
+##### 2. Index Template & Data Types
 The dashboard relies on the specific mappings defined in the `index_template.json` to function correctly.
 * **Numeric Fields (`short`/`integer`):** Fields like `status`, `code`, and `latency_ms` are explicitly mapped as numeric types. This allows the dashboard to perform range queries (e.g., `status >= 400`) and aggregations. If these were mapped as default strings, the error rate logic would fail.
 * **Keyword Fields:** Fields like `levelname` and `kubernetes.container_name` use the `keyword` type, which is required for the "Top 10" bucket aggregations used in the visualization splits.

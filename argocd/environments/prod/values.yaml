@@ -1,11 +1,15 @@
 env: prod
 global:
   host: "its-sharon.com"
-image:
-  tag: v1.0.19
+
+feature-flags-api:
+  image:
+    tag: v1.0.19
+
 kibana:
   config:
     server.publicBaseUrl: "https://kibana.its-sharon.com"
 
-mongo:
-  members: 3
+mongodb:
+  mongo:
+    members: 3
