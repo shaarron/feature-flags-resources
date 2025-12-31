@@ -15,13 +15,19 @@ This repository contains the **Kubernetes infrastructure manifests** for deployi
 
 
 ## Table Of Contents
-  - **[Argocd Deployment Flow](#argocd-deployment-flow)**
-  - **[Sync waves](#sync-waves)**
-  - **[Argocd Applications Structure](#argocd-applications-structure)**
+- **[Argocd Deployment Flow](#argocd-deployment-flow)**
+- **[Sync waves](#sync-waves)**
+- **[Argocd Applications Structure](#argocd-applications-structure)**
+- **[Global Configuration Strategy](#global-configuration-strategy)**
+- **[Argocd Dashboard](#argocd-dashboard)**
+- **[Helm Charts](#helm-charts)**
+  - **[Application charts](#application-charts)**
+  - **[Infrastructure charts](#infrastructure-charts)**
+- **[Observability](#observability)**
   - **[Grafana Dashboard: Feature Flags API](#grafana-dashboard-feature-flags-api-monitoring)**
   - **[Grafana Dashboard: Nginx Ingress Controller](#grafana-dashboard-nginx-ingress-controller-dashboard)**
   - **[Kibana Dashboard: Feature Flags API](#kibana-dashboard-feature-flags-dashboard)**
-  - **[Deploy Locally](#deploy-locally)**
+- **[Deploy Locally](#deploy-locally)**
 
 ## Argocd Deployment Flow
 
@@ -134,7 +140,10 @@ This screenshot demonstrates the **App-of-Apps** pattern in action for the Featu
 
 <img src="argocd-dashboard-demo.png" alt="argocd-dashboard-demo" width="1200" >
 
-## Grafana Dashboard: Feature Flags API Monitoring
+
+## Observability
+
+### Grafana Dashboard: Feature Flags API Monitoring
 
 This Grafana dashboard monitors the Feature Flags API on Kubernetes. 
 Provisioned via the `kube-prometheus-stack` Helm chart (ConfigMap: `feature-flags-api-grafana-dashboard`), it combines Flask app metrics (`prometheus_flask_exporter`) with Kubernetes metrics from Prometheus to visualize traffic, performance, and resource usage.
@@ -152,20 +161,19 @@ Provisioned via the `kube-prometheus-stack` Helm chart (ConfigMap: `feature-flag
 | **Platform Activity: Create vs. Update** | `sum by (method) (increase(flask_http_request_total{method=~"POST/PUT"}[$__range]))` | Displays the distribution of state-changing operations (POST vs PUT) to monitor user engagement (creating new flags vs updating existing ones). |
 
 
-## Grafana Dashboard: Nginx Ingress Controller Dashboard
+### Grafana Dashboard: Nginx Ingress Controller Dashboard
 
 This dashboard is based on the official [NGINX Ingress Controller dashboard (ID: 9614)](https://grafana.com/grafana/dashboards/9614-nginx-ingress-controller/). It provides comprehensive visibility into the ingress traffic, performance, and controller status.
 
 <img src="grafana-ingress-nginx-dashboard.png" alt="grafana-ingress-nginx-dashboard" width="1200" >
 
-
-## Kibana Dashboard: Feature Flags Dashboard
+### Kibana Dashboard: Feature Flags Dashboard
 
 The dashboard, titled "Feature Flags Dashboard", focuses on high-level log volume, service activity, and error rates, particularly targeting feature flags application common log fields like HTTP status codes (`status`/`code`) and Python/standard logging levels (`levelname`).
 
 <img src="kibana-dashboard-demo.png" alt="kibana-dashboard-demo" width="1200" >
 
-### Dashboard Panels Overview
+#### Dashboard Panels Overview
 
 The dashboard is structured into several panels for immediate observability into log health and volume.
 
@@ -179,13 +187,13 @@ The dashboard is structured into several panels for immediate observability into
 | **Pie Chart** | **Log Volume by Service** | Count of records, aggregated by service. | Top 5 `kubernetes.container_name.keyword` values. |
 | **Pie Chart** | **Error Distribution** | Count of records, aggregated by code. | **Filter:** `code >= 400` **OR** `status >= 400`. Grouped by `code` field ranges. |
 
-### Technical Implementation Details
+#### Technical Implementation Details
 
-#### 1. Global Filter: Kubernetes Metadata Required
+##### 1. Global Filter: Kubernetes Metadata Required
 The dashboard applies a **Global Filter** requiring the existence of the field `kubernetes.container_name.keyword`.
 * **Implication:** Only logs originating from Kubernetes containers will be visible. Logs shipped from external sources (e.g., VMs, bare metal) without this specific metadata field will be automatically filtered out.
 
-#### 2. Index Template & Data Types
+##### 2. Index Template & Data Types
 The dashboard relies on the specific mappings defined in the `index_template.json` to function correctly.
 * **Numeric Fields (`short`/`integer`):** Fields like `status`, `code`, and `latency_ms` are explicitly mapped as numeric types. This allows the dashboard to perform range queries (e.g., `status >= 400`) and aggregations. If these were mapped as default strings, the error rate logic would fail.
 * **Keyword Fields:** Fields like `levelname` and `kubernetes.container_name` use the `keyword` type, which is required for the "Top 10" bucket aggregations used in the visualization splits.
