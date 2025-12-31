@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://github.com/shaarron/feature-flags-resources.git
     path: infrastructure/cert-manager
-    targetRevision: main
+    targetRevision: umbrella-chart
     helm:
       releaseName: cert-manager
       valueFiles:

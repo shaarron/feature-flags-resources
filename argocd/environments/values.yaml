@@ -1,8 +1,9 @@
 hostedZoneID: "Z10244981ZAMIY8KVE0M3"
 
-image:
-  repository: ghcr.io/shaarron/feature-flags-app/feature-flags-api
-  tag: latest # default tag unless overridden by environment-specific values.yaml
+feature-flags-api:
+  image:
+    repository: ghcr.io/shaarron/feature-flags-app/feature-flags-api
+    tag: latest # default tag unless overridden by environment-specific values.yaml
 
 clusterSecretStore:
   provider:
