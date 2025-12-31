@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/shaarron/feature-flags-resources.git
-    targetRevision: umbrella-chart
+    targetRevision: main
     path: applications/feature-flags-stack
     helm:
       releaseName: feature-flags

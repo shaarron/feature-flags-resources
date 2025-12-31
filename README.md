@@ -1,12 +1,15 @@
 # Feature Flags Resources
 
-This repository contains the **infrastructure manifests** for deploying [**Feature Flags App**](https://github.com/shaarron/feature-flags-app). 
+This repository contains the **Kubernetes infrastructure manifests** for deploying [**Feature Flags App**](https://github.com/shaarron/feature-flags-app). 
 
 
-**Feature Flags App** running on **Amazon EKS**, managed with **Argo CD** and **Helm**, following modern GitOps principles - “App-of-Apps” pattern.
+**Feature Flags App** running on **Amazon EKS**, managed with **Argo CD** and **Helm**, following modern GitOps principles using the **App-of-Apps** pattern.
 
 **Components overview**
 - **Core App**: Feature Flags API (with MongoDB) 
+- **Ingress Controller**: NGINX Ingress Controller
+- **Secrets Management**: External Secrets Operator
+- **Certificate Management**: Cert-Manager
 - **Monitoring**: Kube-Prometheus-Stack (Prometheus, Grafana)  
 - **Logging**: EFK Stack (Elasticsearch, Fluent Bit, Kibana)
 
@@ -32,13 +35,14 @@ graph TD
   A --> C[Infrastructure Layer]
   C --> C1[Kube Prometheus Stack]
   C --> C2[EFK Stack]
-  C --> C3[MongoDB]
   C --> C4[Cert Manager]
   C --> C5[Ingress NGINX]
   C --> C6[External Secrets Setup]
 
   A --> D[Application Layer]
-  D --> D1[Feature-Flags App]
+  D --> D1[Feature-Flags Stack]
+  D1 --> D2[API]
+  D1 --> D3[MongoDB]
 ```
 
 
@@ -52,10 +56,9 @@ graph TD
 | Cert Manager           | `cert-manager` | `1`       | Installs Cert-Manager controller and ClusterIssuers for TLS management |
 | Ingress NGINX           | `ingress-nginx` | `1`       | Deploys Ingress NGINX controller |
 | External Secrets Setup         |  `external-secrets`| `2`       | Configures the AWS `ClusterSecretStore` configuration |
-| MongoDB          | `default` | `2`       | Deploys the actual MongoDB ReplicaSet instance (Custom Resource) |
 | Kube Prometheus Stack  | `kps`            | `2`       | Metrics stack (Prometheus, Grafana, etc.) |
 | EFK Stack              | `efk`            | `2`       | Fluent Bit → Elasticsearch → Kibana |
-| Feature Flags API      | `default`        | `3`       | Python Flask-based API for toggling flags |
+| Feature Flags Stack    | `default`        | `3`       | Umbrella chart: API + MongoDB (Internal ordering via InitContainers) |
 
 ---
 
@@ -68,16 +71,16 @@ graph TD
 
 2. **Infrastructure**
    - Deploy **kube-prometheus-stack**
-   - Deploy **MongoDB**
    - Deploy **EFK**
-     - [ECK](https://www.elastic.co/docs/deploy-manage/deploy/cloud-on-k8s) (**Elasic Cloud Kubernetes** - for Elasticsearch & kibana)
+     - [ECK](https://www.elastic.co/docs/deploy-manage/deploy-manage/deploy/cloud-on-k8s) (**Elastic Cloud Kubernetes** - for Elasticsearch & kibana)
      - Fluent Bit
    - Deploy **Ingress NGINX**
    - Deploy **external-secrets-setup** (ClusterSecretStore configuration)
    - Deploy **cert-manager**
 
 3. **Applications**
-   - Deploy **Feature-Flags API**
+   - Deploy **Feature-Flags Stack** (Umbrella chart bundling **API** and **MongoDB**)
+
  
 ## Global Configuration Strategy
 
@@ -86,7 +89,7 @@ This repository uses a **centralized configuration pattern**. A single values fi
 **Source of Truth:** [`argocd/environments/values.yaml`](argocd/environments/values.yaml)
 
 ### How it Works
-Argo CD Applications reference the global values file using `valueFiles`.
+Argo CD Applications reference the global values file using `valueFiles`. 
 
 **Example:**
 ```yaml
@@ -98,22 +101,32 @@ source:
 
 ## Helm Charts
 
-This repository includes several Helm charts located in the [infrastructure/](infrastructure/) directory, each managing a specific component of the observability and database stack:
+### Infrastructure charts 
 
-### [Cert-manager](infrastructure/cert-manager/)
+- [Cert-manager](infrastructure/cert-manager/)
 Manages TLS certificates for Kubernetes applications. Automatically provisions and renews certificates from Let's Encrypt and other certificate authorities. Essential for securing ingress traffic and enabling HTTPS.
 
-### [EFK](infrastructure/efk/)
+- [EFK](infrastructure/efk/)
 Complete logging stack combining Elasticsearch, Fluent Bit, and Kibana. Fluent Bit collects logs from all pods, forwards them to Elasticsearch for indexing, and Kibana provides a web UI for log analysis and visualization.
 
-### [External-secrets-setup](infrastructure/external-secrets-setup/)
+- [External-secrets-setup](infrastructure/external-secrets-setup/)
 Configures the ClusterSecretStore and required ServiceAccount resources for External Secrets integration. Enables secure integration with external secret management systems like AWS Secrets Manager. The External Secrets Operator is deployed separately in the bootstrap layer.
 
-### [Kube-prometheus-stack](infrastructure/kube-prometheus-stack/)
+- [Kube-prometheus-stack](infrastructure/kube-prometheus-stack/)
 Comprehensive monitoring solution including Prometheus for metrics collection, Grafana for visualization, and Alertmanager for alerting. Pre-configured with custom dashboards for the Feature Flags API.
 
-### [Mongodb](infrastructure/mongodb/)
-Deploys MongoDB Community Edition custom resources managed by the MongoDB Kubernetes Operator. Provides the persistent data store for the Feature Flags application.
+- [Mongodb](infrastructure/mongodb/)
+Provides the persistent data store for the Feature Flags application. While the chart source is located in `infrastructure/`, it is deployed as a sub-chart (dependency) of the `feature-flags-stack` application.
+
+### Application charts
+
+- [Feature-Flags Stack](applications/feature-flags-stack/)  
+Umbrella chart bundling **API** and **MongoDB** for deploying full feature flags stack
+
+- [Feature-Flags API](applications/feature-flags-api/)  
+The main feature flags application API 
+
+
 
 ## ArgoCD Dashboard
 
