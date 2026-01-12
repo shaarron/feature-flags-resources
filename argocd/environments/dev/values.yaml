@@ -11,4 +11,4 @@ mongodb:
   mongo:
     members: 1
 image:
-  tag: dev-880f11b
+  tag: dev-7defbe9
