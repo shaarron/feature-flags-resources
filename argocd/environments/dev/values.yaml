@@ -1,15 +1,14 @@
 env: dev
 global:
   host: "dev.its-sharon.com"
-
 kibana:
   config:
     server.publicBaseUrl: "https://kibana.dev.its-sharon.com"
-
 feature-flags-api:
   image:
     tag: dev-a721654
-    
 mongodb:
   mongo:
     members: 1
+image:
+  tag: dev-880f11b
