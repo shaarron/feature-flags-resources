@@ -1,15 +1,14 @@
 env: staging
 global:
   host: "staging.its-sharon.com"
-
 feature-flags-api:
   image:
     tag: rc-3c7b3f4
-
 kibana:
   config:
     server.publicBaseUrl: "https://kibana.staging.its-sharon.com"
-
 mongodb:
   mongo:
     members: 3
+image:
+  tag: rc-4b2412a
