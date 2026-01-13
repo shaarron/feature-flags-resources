@@ -5,4 +5,4 @@ metadata:
 data:
   MONGO_HOST: {{ .Values.mongo.host | quote }}
   MONGO_INITDB_ROOT_USERNAME: {{ .Values.mongo.rootUsername | quote }}
-  MONGO_REPLICA_SET: {{ .Values.mongo.replicaSet | quote }}
+  MONGO_IS_REPLICA_SET: {{ .Values.mongo.isReplicaSet | quote }}

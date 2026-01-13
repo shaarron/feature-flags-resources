@@ -26,8 +26,7 @@ mongo:
   configMapName: mongo-config   
   rootUsername: root1
   host: mongo-svc.default.svc.cluster.local
-  database: featureflags
-  replicaSet: false
+  isReplicaSet: true
 
 readinessProbe:
   path: /flags
