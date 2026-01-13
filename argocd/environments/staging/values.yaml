@@ -11,4 +11,4 @@ mongodb:
   mongo:
     members: 3
 image:
-  tag: rc-751b4ef
+  tag: rc-6a988a4
