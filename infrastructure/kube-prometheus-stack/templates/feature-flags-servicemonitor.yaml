@@ -1,9 +1,10 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: feature-flags-api-monitor
+  name: {{ include "kube-prometheus-stack.fullname" . }}-feature-flags-api-monitor
   namespace: kps
   labels:
+    {{- include "kube-prometheus-stack.labels" . | nindent 4 }}
     app: feature-flags-api
     release: kube-prometheus-stack
 spec:

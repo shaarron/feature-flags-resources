@@ -1,7 +1,7 @@
 env: staging
 global:
   host: "staging.its-sharon.com"
-feature-flags-api:
+api:
   image:
     tag: rc-3c7b3f4
 kibana:

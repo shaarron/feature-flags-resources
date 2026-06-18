@@ -1,8 +1,9 @@
 apiVersion: mongodbcommunity.mongodb.com/v1
 kind: MongoDBCommunity
 metadata:
-  name: mongo
- 
+  name: {{ include "mongodb.fullname" . }}
+  labels:
+    {{- include "mongodb.labels" . | nindent 4 }}
 spec:
   members: {{ .Values.mongo.members }}
   type: {{ .Values.mongo.type | default "ReplicaSet" | quote }}
@@ -10,7 +11,7 @@ spec:
 
   security:
     authentication:
-      modes: ["SCRAM"]
+      modes: {{ toJson .Values.mongo.authenticationMode }}
 
   users:
     - name: {{ .Values.mongo.rootUser | quote }}

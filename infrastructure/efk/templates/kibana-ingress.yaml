@@ -1,8 +1,10 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: kibana-ingress
-  namespace: efk
+  name: {{ include "efk.fullname" . }}-kibana-ingress
+  namespace: {{ .Values.namespace | default "efk" }}
+  labels:
+    {{- include "efk.labels" . | nindent 4 }}
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
@@ -10,6 +12,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
     cert-manager.io/cluster-issuer: "letsencrypt-production"
     acme.cert-manager.io/http01-edit-in-place: "true"
+    external-dns.alpha.kubernetes.io/hostname: "kibana.{{ .Values.global.host }}"
 spec:
   ingressClassName: nginx
   tls:

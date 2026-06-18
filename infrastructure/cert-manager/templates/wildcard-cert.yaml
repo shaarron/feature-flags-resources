@@ -1,8 +1,10 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: wildcard-cert
+  name: {{ include "cert-manager.fullname" . }}-wildcard-cert
   namespace: cert-manager
+  labels:
+    {{- include "cert-manager.labels" . | nindent 4 }}
 spec:
   secretName: {{ .Values.certManagerConfig.wildcardCert.secretName }}
   issuerRef:
@@ -13,4 +15,3 @@ spec:
     - "*.{{ .Values.certManagerConfig.domain }}"
     - "{{ .Values.certManagerConfig.domain }}"
     - "*.dev.{{ .Values.certManagerConfig.domain }}"
-

@@ -4,7 +4,7 @@ global:
 kibana:
   config:
     server.publicBaseUrl: "https://kibana.dev.its-sharon.com"
-feature-flags-api:
+api:
   image:
     tag: dev-a721654
 mongodb:

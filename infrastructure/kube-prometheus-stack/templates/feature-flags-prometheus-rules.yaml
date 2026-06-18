@@ -1,9 +1,10 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: feature-flags-prometheus-rules
+  name: {{ include "kube-prometheus-stack.fullname" . }}-feature-flags-prometheus-rules
   namespace: kps
   labels:
+    {{- include "kube-prometheus-stack.labels" . | nindent 4 }}
     release: kube-prometheus-stack
 spec:
   groups:

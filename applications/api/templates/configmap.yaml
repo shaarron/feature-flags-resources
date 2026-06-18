@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "api.fullname" . }}-mongo-config
+  labels:
+    {{- include "api.labels" . | nindent 4 }}
+data:
+  MONGO_HOST: {{ .Values.mongo.host | default (printf "%s-mongodb-svc.%s.svc.cluster.local" .Release.Name .Release.Namespace) | quote }}
+  MONGO_INITDB_ROOT_USERNAME: {{ .Values.mongo.rootUsername | quote }}
+  MONGO_IS_REPLICA_SET: {{ .Values.mongo.isReplicaSet | quote }}

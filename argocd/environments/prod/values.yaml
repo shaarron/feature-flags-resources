@@ -2,7 +2,7 @@ env: prod
 global:
   host: "its-sharon.com"
 
-feature-flags-api:
+api:
   image:
     tag: v1.0.19
 

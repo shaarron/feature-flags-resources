@@ -1,8 +1,10 @@
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
 metadata:
-  name: elasticsearch
+  name: {{ include "efk.fullname" . }}-elasticsearch
   namespace: {{ .Values.namespace | default "efk" }}
+  labels:
+    {{- include "efk.labels" . | nindent 4 }}
 spec:
   version: {{ .Values.elasticsearch.version | quote }}
   http:

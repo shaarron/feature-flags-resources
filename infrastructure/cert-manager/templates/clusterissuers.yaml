@@ -2,7 +2,8 @@ apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
   name: letsencrypt-production
-  namespace: cert-manager
+  labels:
+    {{- include "cert-manager.labels" . | nindent 4 }}
 spec:
   acme:
     email: {{ .Values.certManagerConfig.email }}

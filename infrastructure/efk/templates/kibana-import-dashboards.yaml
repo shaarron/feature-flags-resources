@@ -1,8 +1,10 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: kibana-import-dashboards
-  namespace: efk
+  name: {{ include "efk.fullname" . }}-kibana-import-dashboards
+  namespace: {{ .Values.namespace | default "efk" }}
+  labels:
+    {{- include "efk.labels" . | nindent 4 }}
 spec:
   template:
     spec:
@@ -11,7 +13,7 @@ spec:
       volumes:
         - name: dashboards
           configMap:
-            name: kibana-dashboard-json
+            name: {{ include "efk.fullname" . }}-kibana-dashboard-json
 
       containers:
         - name: importer
