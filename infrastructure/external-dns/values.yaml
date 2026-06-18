@@ -1,0 +1,23 @@
+external-dns:
+  provider:
+    name: aws
+
+  sources:
+    - ingress
+
+  serviceAccount:
+    create: true
+
+  policy: upsert-only
+  registry: txt
+  txtOwnerId: "external-dns"
+
+  domainFilters:
+    - "its-sharon.com"
+
+  zoneIdFilters:
+    - "Z10244981ZAMIY8KVE0M3"
+
+  env:
+    - name: AWS_DEFAULT_REGION
+      value: ap-south-1

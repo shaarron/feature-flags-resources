@@ -1,0 +1,10 @@
+apiVersion: v2
+name: external-dns
+description: ExternalDNS Helm chart wrapper for automatic DNS management via AWS Route53
+type: application
+version: 1.0.0
+appVersion: "0.15.1"
+dependencies:
+  - name: external-dns
+    version: 1.15.1
+    repository: https://kubernetes-sigs.github.io/external-dns/
