@@ -18,7 +18,7 @@ spec:
           value: "true"               
   destination: 
     server: https://kubernetes.default.svc
-    namespace: elastic-system
+    namespace: elastic-system-dev
   syncPolicy:
     automated:
       prune: true

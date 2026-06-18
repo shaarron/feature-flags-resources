@@ -20,7 +20,7 @@ spec:
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: kps
+    namespace: kps-staging
   syncPolicy:
     automated:
       prune: true

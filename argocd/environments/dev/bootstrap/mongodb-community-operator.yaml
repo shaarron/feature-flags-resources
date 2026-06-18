@@ -21,7 +21,7 @@ spec:
           value: "12.0.25.7724-1"
   destination:
     server: https://kubernetes.default.svc
-    namespace: default
+    namespace: default-dev
   syncPolicy:
     automated:
       prune: true

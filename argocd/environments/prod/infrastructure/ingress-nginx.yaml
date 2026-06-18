@@ -27,7 +27,7 @@ spec:
               service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "instance"
   destination:
     server: https://kubernetes.default.svc
-    namespace: ingress-nginx
+    namespace: ingress-nginx-prod
   syncPolicy:
     automated:
       prune: true

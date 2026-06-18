@@ -20,7 +20,7 @@ spec:
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: efk 
+    namespace: efk-prod
   syncPolicy:
     automated:
       prune: true
