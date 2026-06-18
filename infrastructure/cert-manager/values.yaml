@@ -4,7 +4,7 @@ cert-manager:
     enabled: true
   serviceAccount:
     name: cert-manager
-    create: false
+    create: true
   
 certManagerConfig:
   domain: ""
