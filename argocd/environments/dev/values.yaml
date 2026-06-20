@@ -7,6 +7,12 @@ kibana:
 api:
   image:
     tag: dev-a721654
+  ingress:
+    className: alb
+    host: backend.dev
+    annotations:
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/target-type: ip
 mongodb:
   mongo:
     members: 1

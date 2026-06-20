@@ -1,5 +1,8 @@
 hostedZoneID: "Z10244981ZAMIY8KVE0M3"
 
+global:
+  domain: sharon-k.com
+
 api:
   image:
     repository: ghcr.io/shaarron/feature-flags-app/feature-flags-api
