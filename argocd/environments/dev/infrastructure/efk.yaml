@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/shaarron/feature-flags-resources.git
-    targetRevision: main
+    targetRevision: improvements
     path: infrastructure/efk
     helm:
       releaseName: efk
@@ -20,7 +20,7 @@ spec:
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: efk-dev
+    namespace: efk
   syncPolicy:
     automated:
       prune: true
