@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "efk.fullname" . }}-kibana-ingress
-  namespace: {{ .Values.namespace | default "efk" }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "efk.labels" . | nindent 4 }}
   annotations:

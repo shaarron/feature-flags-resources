@@ -18,7 +18,7 @@ spec:
           metrics:
             enabled: true
             serviceMonitor:
-              enabled: true
+              enabled: false
           service:
             type: LoadBalancer
             annotations:
@@ -27,7 +27,7 @@ spec:
               service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "instance"
   destination:
     server: https://kubernetes.default.svc
-    namespace: ingress-nginx-prod
+    namespace: ingress-nginx
   syncPolicy:
     automated:
       prune: true

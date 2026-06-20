@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "kube-prometheus-stack.fullname" . }}-grafana-ingress
-  namespace: kps
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "kube-prometheus-stack.labels" . | nindent 4 }}
   annotations:

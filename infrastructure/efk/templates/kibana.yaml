@@ -2,7 +2,7 @@ apiVersion: kibana.k8s.elastic.co/v1
 kind: Kibana
 metadata:
   name: {{ include "efk.fullname" . }}-kibana
-  namespace: {{ .Values.namespace | default "efk" }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "efk.labels" . | nindent 4 }}
 spec:

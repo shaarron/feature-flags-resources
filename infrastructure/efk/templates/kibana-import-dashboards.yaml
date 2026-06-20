@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ include "efk.fullname" . }}-kibana-import-dashboards
-  namespace: {{ .Values.namespace | default "efk" }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "efk.labels" . | nindent 4 }}
 spec:

@@ -5,7 +5,16 @@ ingress:
   tlsSecretName: ""
 
 kube-prometheus-stack:
-  namespaceOverride: kps
+  # These components are not accessible in EKS managed control plane
+  kubeScheduler:
+    enabled: false
+  kubeEtcd:
+    enabled: false
+  kubeControllerManager:
+    enabled: false
+  kubelet:
+    serviceMonitor:
+      enabled: false
 
   prometheus:
     prometheusSpec:
@@ -34,7 +43,6 @@ kube-prometheus-stack:
       UserKey: admin-user
       PasswordKey: admin-password
 
-    namespaceOverride: kps
     persistence:
       enabled: true
     
@@ -59,9 +67,3 @@ kube-prometheus-stack:
       periodSeconds: 30
 
 
-  kube-state-metrics:
-    namespaceOverride: kps
-
-  prometheus-node-exporter:
-    namespaceOverride: kps
-    

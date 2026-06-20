@@ -20,7 +20,7 @@ spec:
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: efk-staging
+    namespace: efk
   syncPolicy:
     automated:
       prune: true

@@ -19,7 +19,7 @@ spec:
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: default-staging
+    namespace: default
   syncPolicy:
     automated:
       prune: true

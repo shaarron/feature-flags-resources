@@ -2,7 +2,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ include "kube-prometheus-stack.fullname" . }}-feature-flags-api-monitor
-  namespace: kps
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "kube-prometheus-stack.labels" . | nindent 4 }}
     app: feature-flags-api
@@ -11,9 +11,6 @@ spec:
   selector:
     matchLabels:
       app: feature-flags-api
-  namespaceSelector:
-    matchNames:
-      - default
   endpoints:
     - port: http
       path: /metrics

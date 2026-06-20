@@ -4,8 +4,6 @@ global:
 ingress:
   tlsSecretName: ""
 
-namespace: efk
-
 elasticsearch:
   version: "9.1.5"
   nodeSetName: "default"
