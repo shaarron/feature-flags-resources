@@ -10,8 +10,8 @@ spec:
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer
-  commonName: "*.{{ .Values.certManagerConfig.domain }}"
+  commonName: "*.{{ .Values.global.domain }}"
   dnsNames:
-    - "*.{{ .Values.certManagerConfig.domain }}"
-    - "{{ .Values.certManagerConfig.domain }}"
-    - "*.dev.{{ .Values.certManagerConfig.domain }}"
+    - "*.{{ .Values.global.domain }}"
+    - "{{ .Values.global.domain }}"
+    - "*.dev.{{ .Values.global.domain }}"

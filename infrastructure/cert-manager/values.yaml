@@ -7,7 +7,6 @@ cert-manager:
     create: true
   
 certManagerConfig:
-  domain: ""
   wildcardCert:
     secretName: ""
   email: ""

@@ -1,14 +1,12 @@
 env: staging
 global:
-  host: "staging.its-sharon.com"
+  host: "staging.sharon-k.com"
 api:
   image:
     tag: rc-3c7b3f4
 kibana:
   config:
-    server.publicBaseUrl: "https://kibana.staging.its-sharon.com"
+    server.publicBaseUrl: "https://kibana.staging.sharon-k.com"
 mongodb:
   mongo:
     members: 3
-image:
-  tag: rc-6a988a4

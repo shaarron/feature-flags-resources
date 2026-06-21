@@ -1,6 +1,6 @@
 env: prod
 global:
-  host: "its-sharon.com"
+  host: "sharon-k.com"
 
 api:
   image:
@@ -8,7 +8,7 @@ api:
 
 kibana:
   config:
-    server.publicBaseUrl: "https://kibana.its-sharon.com"
+    server.publicBaseUrl: "https://kibana.sharon-k.com"
 
 mongodb:
   mongo:

@@ -1,20 +1,12 @@
 env: dev
 global:
-  host: "dev.its-sharon.com"
+  host: "dev.sharon-k.com"
 kibana:
   config:
-    server.publicBaseUrl: "https://kibana.dev.its-sharon.com"
+    server.publicBaseUrl: "https://kibana.dev.sharon-k.com"
 api:
   image:
     tag: dev-a721654
-  ingress:
-    className: alb
-    host: backend.dev
-    annotations:
-      alb.ingress.kubernetes.io/scheme: internet-facing
-      alb.ingress.kubernetes.io/target-type: ip
 mongodb:
   mongo:
     members: 1
-image:
-  tag: dev-3207c5d

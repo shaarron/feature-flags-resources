@@ -1,5 +1,3 @@
-hostedZoneID: "Z10244981ZAMIY8KVE0M3"
-
 global:
   domain: sharon-k.com
 
@@ -13,14 +11,17 @@ clusterSecretStore:
     aws:
       region: "ap-south-1"
 
-ingress: 
-  tlsSecretName: "wildcard-itssharon"
+ingress:
+  tlsSecretName: "wildcard-sharon-k"
 
 certManagerConfig:
-  domain: "its-sharon.com"
-  email: "sharon@its-sharon.com"
+  email: "sharon@sharon-k.com"
   route53:
     region: "ap-south-1"
     hostedZoneID: "Z10244981ZAMIY8KVE0M3"
   wildcardCert:
-    secretName: "wildcard-itssharon"
+    secretName: "wildcard-sharon-k"
+
+external-dns:
+  domainFilters:
+    - "sharon-k.com"
