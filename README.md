@@ -28,6 +28,9 @@ This repository contains the **Kubernetes infrastructure manifests** for deployi
   - **[Grafana Dashboard: Feature Flags API](#grafana-dashboard-feature-flags-api-monitoring)**
   - **[Grafana Dashboard: Nginx Ingress Controller](#grafana-dashboard-nginx-ingress-controller-dashboard)**
   - **[Kibana Dashboard: Feature Flags API](#kibana-dashboard-feature-flags-dashboard)**
+- **[Prerequisites](#prerequisites)**
+  - **[AWS Secrets Manager](#aws-secrets-manager)**
+  - **[EKS Pod Identity Associations](#eks-pod-identity-associations)**
 - **[Deploy Locally](#deploy-locally)**
 
 ## Architecture
@@ -167,34 +170,6 @@ targetRevision: main   # change this to point dev at any branch
   MongoDBCommunity custom resource. Deployed as a sub-chart dependency of the `feature-flags-stack` umbrella chart.
 
 
-## ArgoCD Dashboard
-
-<img src="argocd-dashboard-demo.png" alt="argocd-dashboard-demo" width="1200" >
-
-
-## Observability
-
-### Grafana Dashboard: Feature Flags API Monitoring
-
-<img src="grafana-dashboard-demo.png" alt="grafana-dashboard-demo" width="1200" >
-
-| **Panel** | **Metric Query** | **Description** |
-|:---|:---|:---|
-| **HTTP Request Rate** | `sum by (status, method, handler) (rate(flask_http_request_total[5m]))` | Rate of incoming HTTP requests over the last 5 minutes. |
-| **HTTP Error Rate (5xx)** | `sum(rate(flask_http_request_total{status=~"5.."}[5m]))` | Rate of server-side errors. |
-| **Response Time (p95)** | `histogram_quantile(0.95, sum(rate(flask_http_request_duration_seconds_bucket[5m])) by (le))` | 95th percentile response time. |
-| **Pod CPU Usage** | `avg by (pod) (rate(container_cpu_usage_seconds_total{pod=~"feature-flags-api-.*", image!="", container!="POD"}[5m]))` | Average CPU utilization per pod. |
-| **Pod Memory Usage (MB)** | `avg by (pod) (container_memory_usage_bytes{pod=~"feature-flags-api-.*", container!="POD"} / 1024 / 1024)` | Average memory usage per pod. |
-| **Platform Activity: Create vs. Update** | `sum by (method) (increase(flask_http_request_total{method=~"POST/PUT"}[$__range]))` | Distribution of POST vs PUT operations. |
-
-### Grafana Dashboard: Nginx Ingress Controller Dashboard
-
-<img src="grafana-ingress-nginx-dashboard.png" alt="grafana-ingress-nginx-dashboard" width="1200" >
-
-### Kibana Dashboard: Feature Flags Dashboard
-
-<img src="kibana-dashboard-demo.png" alt="kibana-dashboard-demo" width="1200" >
-
 ## Prerequisites
 
 Before deploying, the following must exist in your AWS account.
@@ -242,6 +217,34 @@ aws eks create-pod-identity-association \
   --role-arn arn:aws:iam::<account-id>:role/<role-name>
 ```
 
+
+## ArgoCD Dashboard
+
+<img src="argocd-dashboard-demo.png" alt="argocd-dashboard-demo" width="1200" >
+
+
+## Observability
+
+### Grafana Dashboard: Feature Flags API Monitoring
+
+<img src="grafana-dashboard-demo.png" alt="grafana-dashboard-demo" width="1200" >
+
+| **Panel** | **Metric Query** | **Description** |
+|:---|:---|:---|
+| **HTTP Request Rate** | `sum by (status, method, handler) (rate(flask_http_request_total[5m]))` | Rate of incoming HTTP requests over the last 5 minutes. |
+| **HTTP Error Rate (5xx)** | `sum(rate(flask_http_request_total{status=~"5.."}[5m]))` | Rate of server-side errors. |
+| **Response Time (p95)** | `histogram_quantile(0.95, sum(rate(flask_http_request_duration_seconds_bucket[5m])) by (le))` | 95th percentile response time. |
+| **Pod CPU Usage** | `avg by (pod) (rate(container_cpu_usage_seconds_total{pod=~"feature-flags-api-.*", image!="", container!="POD"}[5m]))` | Average CPU utilization per pod. |
+| **Pod Memory Usage (MB)** | `avg by (pod) (container_memory_usage_bytes{pod=~"feature-flags-api-.*", container!="POD"} / 1024 / 1024)` | Average memory usage per pod. |
+| **Platform Activity: Create vs. Update** | `sum by (method) (increase(flask_http_request_total{method=~"POST/PUT"}[$__range]))` | Distribution of POST vs PUT operations. |
+
+### Grafana Dashboard: Nginx Ingress Controller Dashboard
+
+<img src="grafana-ingress-nginx-dashboard.png" alt="grafana-ingress-nginx-dashboard" width="1200" >
+
+### Kibana Dashboard: Feature Flags Dashboard
+
+<img src="kibana-dashboard-demo.png" alt="kibana-dashboard-demo" width="1200" >
 
 ## Deploy Locally
 
