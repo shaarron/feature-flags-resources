@@ -14,7 +14,7 @@ spec:
     helm:
       parameters:
         - name: installCRDs
-          value: "true"               
+          value: "true"
         - name: operator.version
           value: "0.13.0"
         - name: agent.version
