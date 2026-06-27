@@ -1,6 +1,7 @@
 targetRevision: main
 env: prod
 global:
+  env: prod
   host: "sharon-k.com"
 
 feature-flags-api:

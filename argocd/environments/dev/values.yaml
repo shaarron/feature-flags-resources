@@ -1,6 +1,7 @@
 targetRevision: refactor/infrastructure-hardening
 env: dev
 global:
+  env: dev
   host: "dev.sharon-k.com"
 
 feature-flags-api:

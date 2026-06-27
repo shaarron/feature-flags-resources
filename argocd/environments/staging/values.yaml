@@ -1,6 +1,7 @@
 targetRevision: main
 env: staging
 global:
+  env: staging
   host: "staging.sharon-k.com"
 
 feature-flags-api:
