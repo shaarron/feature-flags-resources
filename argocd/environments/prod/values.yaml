@@ -1,15 +1,28 @@
+targetRevision: main
 env: prod
 global:
-  host: "its-sharon.com"
+  host: "sharon-k.com"
 
 feature-flags-api:
   image:
     tag: v1.0.19
-
-kibana:
-  config:
-    server.publicBaseUrl: "https://kibana.its-sharon.com"
+  ingress:
+    subdomain: "backend"
 
 mongodb:
   mongo:
     members: 3
+
+kibana:
+  config:
+    server.publicBaseUrl: "https://kibana.sharon-k.com"
+  ingress:
+    hosts:
+      - host: kibana.sharon-k.com
+        paths:
+          - path: /
+
+grafana:
+  ingress:
+    hosts:
+      - grafana.sharon-k.com

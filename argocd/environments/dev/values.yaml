@@ -1,14 +1,28 @@
+targetRevision: refactor/infrastructure-hardening
 env: dev
 global:
-  host: "dev.its-sharon.com"
-kibana:
-  config:
-    server.publicBaseUrl: "https://kibana.dev.its-sharon.com"
+  host: "dev.sharon-k.com"
+
 feature-flags-api:
   image:
     tag: dev-a721654
+  ingress:
+    subdomain: "backend"
+
 mongodb:
   mongo:
     members: 1
-image:
-  tag: dev-3207c5d
+
+kibana:
+  config:
+    server.publicBaseUrl: "https://kibana.dev.sharon-k.com"
+  ingress:
+    hosts:
+      - host: kibana.dev.sharon-k.com
+        paths:
+          - path: /
+
+grafana:
+  ingress:
+    hosts:
+      - grafana.dev.sharon-k.com
