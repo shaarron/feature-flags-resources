@@ -1,0 +1,17 @@
+serviceAccount:
+  name: external-dns-sa
+  create: true
+
+external-dns:
+  provider:
+    name: aws
+  serviceAccount:
+    name: external-dns-sa
+    create: false
+    annotations: {}
+  policy: sync
+  txtOwnerId: ""
+  domainFilters: []
+  sources:
+    - ingress
+    - service

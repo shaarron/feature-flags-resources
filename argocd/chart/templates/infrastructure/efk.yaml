@@ -1,30 +1,28 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: root-prod
+  name: efk
   namespace: argocd
-
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   project: default
-
   source:
     repoURL: https://github.com/shaarron/feature-flags-resources.git
-    targetRevision: main
-    path: argocd/chart
+    targetRevision: {{ .Values.targetRevision }}
+    path: infrastructure/efk
     helm:
+      releaseName: efk
       valueFiles:
-        - ../environments/values.yaml
-        - ../environments/prod/values.yaml
-
+        - ../../argocd/environments/values.yaml
+        - ../../argocd/environments/{{ .Values.env }}/values.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
-  
+    namespace: efk
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      - ApplyOutOfSyncOnly=true
-
+      - ServerSideApply=true

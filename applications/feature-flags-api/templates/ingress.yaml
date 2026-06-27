@@ -1,18 +1,24 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: feature-flags-ingress
-  namespace: default
+  name: {{ include "feature-flags-api.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "feature-flags-api.labels" . | nindent 4 }}
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - {{ .Values.ingress.subdomain }}.{{ .Values.global.host }}
+      secretName: {{ .Values.ingress.tlsSecretName }}
   rules:
-    - host: feature-flags.{{ .Values.global.host }}
+    - host: {{ .Values.ingress.subdomain }}.{{ .Values.global.host }}
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: feature-flags-api-service
+                name: {{ include "feature-flags-api.fullname" . }}
                 port:
-                  number: 5000
+                  number: {{ .Values.service.port }}

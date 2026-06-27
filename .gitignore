@@ -5,3 +5,5 @@
 # macOS system files
 .DS_Store
 __MACOSX/
+# IDE
+.idea/

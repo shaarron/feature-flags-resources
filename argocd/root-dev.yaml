@@ -10,10 +10,12 @@ spec:
   source:
     repoURL: https://github.com/shaarron/feature-flags-resources.git
     targetRevision: main
-    path: argocd/environments/dev
-    directory:
-      recurse: true
-    
+    path: argocd/chart
+    helm:
+      valueFiles:
+        - ../environments/values.yaml
+        - ../environments/dev/values.yaml
+
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

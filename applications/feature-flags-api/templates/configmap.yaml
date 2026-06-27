@@ -2,6 +2,9 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Values.mongo.configMapName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "feature-flags-api.labels" . | nindent 4 }}
 data:
   MONGO_HOST: {{ .Values.mongo.host | quote }}
   MONGO_INITDB_ROOT_USERNAME: {{ .Values.mongo.rootUsername | quote }}

@@ -1,9 +1,13 @@
+fullnameOverride: "feature-flags-api"
+
 replicaCount: 2
 
 image:
   repository: ghcr.io/shaarron/feature-flags-app/feature-flags-api
   tag: latest
   pullPolicy: IfNotPresent
+
+imagePullSecrets: []
 
 podSecurityContext:
   fsGroup: 1001
@@ -17,13 +21,22 @@ securityContext:
   runAsUser: 1001
   runAsGroup: 1001
 
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
 service:
   type: ClusterIP
   port: 5000
 
+ingress:
+  subdomain: ""
+  tlsSecretName: "wildcard-sharon-k"
+
 mongo:
-  secretName: mongo-secret  
-  configMapName: mongo-config   
+  secretName: mongo-secret
+  configMapName: mongo-config
   rootUsername: root1
   host: mongo-svc.default.svc.cluster.local
   isReplicaSet: true
@@ -50,6 +63,15 @@ resources:
   limits:
     memory: "256Mi"
     cpu: "100m"
+
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+
+networkPolicy:
+  enabled: false
 
 global:
   host: ""

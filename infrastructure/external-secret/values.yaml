@@ -1,0 +1,11 @@
+serviceAccount:
+  name: external-secrets-sa
+  namespace: external-secrets
+
+clusterSecretStore:
+  name: aws-secret-store
+  syncWave: "2"
+  provider:
+    aws:
+      service: SecretsManager
+      region: ""

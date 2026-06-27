@@ -1,14 +1,29 @@
+targetRevision: main
 env: staging
 global:
-  host: "staging.its-sharon.com"
+  env: staging
+  host: "staging.sharon-k.com"
+
 feature-flags-api:
   image:
     tag: rc-3c7b3f4
-kibana:
-  config:
-    server.publicBaseUrl: "https://kibana.staging.its-sharon.com"
+  ingress:
+    subdomain: "backend"
+
 mongodb:
   mongo:
     members: 3
-image:
-  tag: rc-6a988a4
+
+kibana:
+  config:
+    server.publicBaseUrl: "https://kibana.staging.sharon-k.com"
+  ingress:
+    hosts:
+      - host: kibana.staging.sharon-k.com
+        paths:
+          - path: /
+
+grafana:
+  ingress:
+    hosts:
+      - grafana.staging.sharon-k.com

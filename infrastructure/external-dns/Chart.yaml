@@ -1,0 +1,9 @@
+apiVersion: v2
+name: external-dns
+description: Wrapper chart for ExternalDNS with AWS Route53
+type: application
+version: 1.0.0
+dependencies:
+  - name: external-dns
+    version: 1.15.1
+    repository: "https://kubernetes-sigs.github.io/external-dns/"

@@ -1,4 +1,4 @@
-hostedZoneID: "Z10244981ZAMIY8KVE0M3"
+hostedZoneID: "Z01921003NQMEIE6Q3E0L"
 
 feature-flags-api:
   image:
@@ -10,14 +10,14 @@ clusterSecretStore:
     aws:
       region: "ap-south-1"
 
-ingress: 
-  tlsSecretName: "wildcard-itssharon"
+ingress:
+  tlsSecretName: "wildcard-sharon-k"
 
 certManagerConfig:
-  domain: "its-sharon.com"
-  email: "sharon@its-sharon.com"
+  domain: "sharon-k.com"
+  email: "sharon@sharon-k.com"
   route53:
     region: "ap-south-1"
-    hostedZoneID: "Z10244981ZAMIY8KVE0M3"
+    hostedZoneID: "Z01921003NQMEIE6Q3E0L"
   wildcardCert:
-    secretName: "wildcard-itssharon"
+    secretName: "wildcard-sharon-k"
