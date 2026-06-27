@@ -18,7 +18,7 @@ spec:
         - ../../argocd/environments/{{ .Values.env }}/values.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: feature-flags
+    namespace: default
   syncPolicy:
     automated:
       prune: true
