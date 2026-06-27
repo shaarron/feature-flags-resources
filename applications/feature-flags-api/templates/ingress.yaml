@@ -7,6 +7,10 @@ metadata:
     {{- include "feature-flags-api.labels" . | nindent 4 }}
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - {{ .Values.ingress.subdomain }}.{{ .Values.global.host }}
+      secretName: {{ .Values.ingress.tlsSecretName }}
   rules:
     - host: {{ .Values.ingress.subdomain }}.{{ .Values.global.host }}
       http:

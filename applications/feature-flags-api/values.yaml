@@ -32,6 +32,7 @@ service:
 
 ingress:
   subdomain: ""
+  tlsSecretName: "wildcard-sharon-k"
 
 mongo:
   secretName: mongo-secret
