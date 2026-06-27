@@ -84,11 +84,11 @@ graph TD
    - Install External Secrets operator + CRDs
 
 2. **Infrastructure**
+   - Deploy **cert-manager**
+   - Deploy **ingress-nginx**
    - Deploy **kube-prometheus-stack**
    - Deploy **EFK**
-   - Deploy **Ingress NGINX**
    - Deploy **external-secret** (ClusterSecretStore configuration)
-   - Deploy **cert-manager**
 
 3. **Applications**
    - Deploy **feature-flags** (Umbrella chart bundling **Feature-Flags API** and **MongoDB**)
@@ -99,7 +99,7 @@ graph TD
 | Component                  | Namespace          | Sync Wave | Notes |
 |----------------------------|--------------------|-----------|-------|
 | External DNS               | `external-dns`     | `1`       | Registers DNS records in Route53 |
-| MongoDB Operator           | `mongodb`          | `1`       | Installs MongoDB Community Operator |
+| MongoDB Operator           | `default`          | `1`       | Installs MongoDB Community Operator |
 | ECK Operator               | `elastic-system`   | `1`       | Deploys ECK operator (Elasticsearch & Kibana) |
 | External Secrets Operator  | `external-secrets` | `1`       | Installs External Secrets Operator |
 | Cert Manager               | `cert-manager`     | `1`       | Installs Cert-Manager controller and ClusterIssuers |
@@ -107,7 +107,7 @@ graph TD
 | External Secret            | `external-secrets` | `2`       | Configures the AWS ClusterSecretStore |
 | Kube Prometheus Stack      | `kps`              | `2`       | Metrics stack (Prometheus, Grafana, etc.) |
 | EFK Stack                  | `efk`              | `2`       | Fluent Bit → Elasticsearch → Kibana |
-| Feature Flags              | `feature-flags`    | `3`       | Umbrella chart: API + MongoDB |
+| Feature Flags              | `default`          | `3`       | Umbrella chart: API + MongoDB |
 
 
 ### Global Configuration Strategy
@@ -117,7 +117,9 @@ This repository uses a **layered configuration pattern**:
 - `argocd/environments/values.yaml` — shared defaults (repository, region, hosted zone)
 - `argocd/environments/<env>/values.yaml` — per-environment overrides (domain, image tag, replica count, targetRevision)
 
-The root app (`root-<env>.yaml`) is backed by a single shared Helm chart at `argocd/chart/` that renders all child Applications. Each root app passes its env-specific values file, which controls which git branch all child apps track:
+The App-of-Apps pattern is implemented as a **single shared Helm chart** at `argocd/chart/` (rather than directory recursion). The chart renders all child ArgoCD `Application` CRDs from templates, driven by per-environment values. This allows `targetRevision` to be controlled per environment without duplicating Application manifests.
+
+The root app (`root-<env>.yaml`) points at this chart and passes its env-specific values file, which controls which git branch all child apps track:
 
 ```yaml
 # root-dev.yaml
@@ -192,6 +194,54 @@ targetRevision: main   # change this to point dev at any branch
 ### Kibana Dashboard: Feature Flags Dashboard
 
 <img src="kibana-dashboard-demo.png" alt="kibana-dashboard-demo" width="1200" >
+
+## Prerequisites
+
+Before deploying, the following must exist in your AWS account.
+
+### AWS Secrets Manager
+
+All secrets are stored under a single secret per environment, keyed as `feature-flags/<env>` (e.g. `feature-flags/dev`, `feature-flags/staging`, `feature-flags/prod`).
+
+The secret must contain the following key/value pairs:
+
+| Key                          | Used by               | Description                              |
+|------------------------------|-----------------------|------------------------------------------|
+| `MONGO_INITDB_ROOT_PASSWORD` | MongoDB, Feature Flags API | MongoDB root user password          |
+| `APP_USER_PASSWORD`          | MongoDB, Feature Flags API | MongoDB application user password   |
+| `admin-user`                 | Grafana               | Grafana admin username (when `grafana.externalSecrets.enabled: true`) |
+| `admin-password`             | Grafana               | Grafana admin password (when `grafana.externalSecrets.enabled: true`) |
+
+Example (AWS CLI):
+```sh
+aws secretsmanager create-secret \
+  --name feature-flags/dev \
+  --secret-string '{
+    "MONGO_INITDB_ROOT_PASSWORD": "<value>",
+    "APP_USER_PASSWORD": "<value>",
+    "admin-user": "admin",
+    "admin-password": "<value>"
+  }'
+```
+
+### EKS Pod Identity Associations
+
+All AWS-integrated components authenticate via EKS Pod Identity. The following associations must be created before deploying (Terraform handles this — listed here for reference):
+
+| Service Account               | Namespace          | IAM Role Purpose                        |
+|-------------------------------|--------------------|-----------------------------------------|
+| `external-secrets-sa`         | `external-secrets` | Read secrets from AWS Secrets Manager   |
+| `external-dns`                | `external-dns`     | Manage Route53 DNS records              |
+| `cert-manager`                | `cert-manager`     | DNS-01 challenge via Route53            |
+
+```sh
+aws eks create-pod-identity-association \
+  --cluster-name <cluster-name> \
+  --namespace external-secrets \
+  --service-account external-secrets-sa \
+  --role-arn arn:aws:iam::<account-id>:role/<role-name>
+```
+
 
 ## Deploy Locally
 

@@ -1,4 +1,4 @@
-targetRevision: refactor/infrastructure-hardening
+targetRevision: main # example: can be some dev branch
 env: dev
 global:
   env: dev
